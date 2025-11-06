@@ -1,1 +1,40 @@
 
+{
+  "template_id": "technical_procedure",
+  "title": "Technical Procedure Workflow Blueprint",
+  "description": "Outlines a process for designing, verifying, and documenting a reproducible technical operation or engineering process.",
+  "phases": [
+    {
+      "id": "P1",
+      "title": "Specification and Scope Definition",
+      "tasks": [
+        "Clarify operational objectives and constraints",
+        "Gather system requirements and environmental parameters",
+        "Determine necessary tools, materials, and personnel"
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Procedure Drafting and Sequencing",
+      "tasks": [
+        "Draft step-by-step operational instructions",
+        "Sequence dependencies logically and ensure safety compliance",
+        "Include fallback procedures for potential failure states"
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "Testing, Validation, and Documentation",
+      "tasks": [
+        "Run pilot tests and record observations",
+        "Validate each step against technical specifications",
+        "Finalize procedural document and archive results"
+      ]
+    }
+  ],
+  "metadata": {
+    "category": "Engineering",
+    "author": "Grimoire v4.5",
+    "version": "1.0"
+  }
+}
