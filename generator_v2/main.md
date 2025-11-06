@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-generator/main.py — Unified Version (Merged)
+generator/main.py — codename 'Grimoire' Version 4.5  (Merged/Unified)
 
 AI Instructional Workflow Generator
 -----------------------------------
