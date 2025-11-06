@@ -1,1 +1,40 @@
+{
+  "template_id": "meta_reflection",
+  "title": "Meta-Reflection Workflow",
+  "description": "A recursive self-assessment process for AI systems or educators to evaluate their own learning frameworks.",
+  "phases": [
+    {
+      "id": "P1",
+      "title": "Awareness and Observation",
+      "tasks": [
+        "Collect system outputs or learner artifacts",
+        "Identify recurring patterns of success or error",
+        "Document areas of cognitive or procedural bias"
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Interpretation and Reconciliation",
+      "tasks": [
+        "Map observed trends to underlying causes",
+        "Cross-compare current strategies with intended design goals",
+        "Redefine or merge overlapping conceptual structures"
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "Evolution and Reconfiguration",
+      "tasks": [
+        "Regenerate improved frameworks using recursive synthesis",
+        "Archive obsolete models with annotation of lessons learned",
+        "Validate new models through internal feedback or peer testing"
+      ]
+    }
+  ],
+  "metadata": {
+    "category": "Metacognition",
+    "author": "Grimoire v4.5",
+    "version": "1.0"
+  }
+}
 
