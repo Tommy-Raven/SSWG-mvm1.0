@@ -24,7 +24,7 @@
 
 ---
 
-# Overview
+## Overview
 
 **Recursive_Grimoire_ v1.13.0** is a **meta-educational AI system** that conjures, evaluates, and evolves **instructional workflows** automatically.
 It functions both as a *teacher* and a *scribe*, translating user intent into self-contained learning frameworks that recursively generate new instructions for humans or AI agents.
@@ -33,7 +33,7 @@ Each workflow is a **spell of knowledge**, structured with tasks, dependencies, 
 
 ---
 
-# Design Philosophy
+## Design Philosophy
 
 > “Each workflow teaches the next workflow how to teach.”
 
@@ -42,7 +42,7 @@ Every generated workflow is a living artifact, forming a **lineage of evolving p
 
 ---
 
-# System Architecture
+## System Architecture
 
 | Component             | Purpose                   | Description                                                     |
 | --------------------- | ------------------------- | --------------------------------------------------------------- |
@@ -58,7 +58,7 @@ Every generated workflow is a living artifact, forming a **lineage of evolving p
 
 ---
 
-# Core Features
+## Core Features
 
 * **Recursive Workflow Generation** — Every output can seed future workflows.
 * **Bimodal Representation** — Markdown for humans; minified JSON for machines.
@@ -74,22 +74,35 @@ Every generated workflow is a living artifact, forming a **lineage of evolving p
 
 # How It Works
 
-1. **Invocation** — User specifies workflow purpose, audience, and style.
-2. **Phase Generation** — `generator/main.py` constructs the **six-phase workflow**:
+##1. **Invocation** — User specifies workflow purpose, audience, and style.
 
-   * **Phase 1:** Initialization & Variable Acquisition
+
+##2. **Phase Generation** — `generator/main.py` constructs the **six-phase workflow**:
+
+   * **Phase 1:** Initialization & Variable Acquisition##
+
    * **Phase 1.5:** Objective Refinement (abstract → measurable goals)
+
    * **Phase 2:** Human-Readable How-To Generation
+
    * **Phase 3:** Modular Expansion & Reusability
+
    * **Phase 4:** Evaluation & Quality Assurance
+
    * **Phase 5:** Regeneration & Evolution
-3. **Validation** — Schema verification ensures completeness, dependency integrity, and naming uniqueness.
-4. **Evaluation** — Metrics measure clarity, coverage, expansion potential, and AI translatability.
-5. **Reflection & Regeneration** — Versioning, minified JSON export, and recursive self-improvement loops.
+     
+
+##3. **Validation** — Schema verification ensures completeness, dependency integrity, and naming uniqueness.
+
+
+##4. **Evaluation** — Metrics measure clarity, coverage, expansion potential, and AI translatability.
+
+
+##5. **Reflection & Regeneration** — Versioning, minified JSON export, and recursive self-improvement loops.
 
 ---
 
-# Operational Workflow (Grimoire-Themed)
+# Operational Workflow
 
 ```mermaid
 %% Recursive_Grimoire_ Workflow
@@ -133,7 +146,7 @@ flowchart TD
 
 ---
 
-# Example Templates
+### Example Templates
 
 | Template                            | Focus         | Primary Use                              |
 | ----------------------------------- | ------------- | ---------------------------------------- |
@@ -144,7 +157,7 @@ flowchart TD
 
 ---
 
-# Intended Users
+### Intended Users
 
 * **AI Developers** — Explore recursive instructional AI.
 * **Educators & Trainers** — Auto-generate curriculum structures.
@@ -153,7 +166,7 @@ flowchart TD
 
 ---
 
-# Technology Stack
+### Technology Stack
 
 * Python 3.10+
 * JSON + Markdown hybrid architecture
@@ -163,7 +176,7 @@ flowchart TD
 
 ---
 
-# Setup & Usage
+### Setup & Usage
 
 ### Clone Repository
 
@@ -187,39 +200,39 @@ python cli.py --purpose "Design an AI ethics curriculum"
 ### View Results
 
 * **Generated JSON:** `data/workflows/`
+
 * **Logs:** `logs/workflow.log`
+
 * **Optional .dot Graph:** `build/workflow_graph.dot`
 
 ---
 
-# Future Enhancements
+# Future Enhancements ⛙
 
-* Adaptive semantic embeddings for self-learning
+>* Adaptive semantic embeddings for self-learning
+
 * Domain-specific plugin grimoires
+
 * Multi-agent recursive co-generation
+
 * Interactive dashboard visualization
+
 * Open LLM integration for semantic workflow synthesis
+
 * Automatic derivative workflow generation with lineage tracking
 
 ---
 
-# Contributing
+## Contributing
 
-Open to contributions around:
-
-* Recursive orchestration and DAG management
-* Memory optimization and versioning
-* Multi-domain schema integration
-
-Submit issues or pull requests via GitHub.
+**see: [_CONTRIBUTING.md_][]**
 
 ---
 
-# License
+## License
 
-Proprietary — Research Phase.
-All rights reserved © 2025 Tommy Raven / Raven Recordings
-
+Proprietary — Research Phase. 
+All rights reserved © 2025 Tommy Raven / Raven Recordings ™
 ---
 
 # Contact
