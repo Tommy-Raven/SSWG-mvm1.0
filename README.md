@@ -1,13 +1,12 @@
-# Grimoire v4.5 — AI Instructional Workflow Generator
+# Recursive_Grimoire_ v1.13.0 
+## AI Instructional Workflow Generator
 
-![Project Status: Experimental](https://img.shields.io/badge/status-experimental-orange)
-![Python](https://img.shields.io/badge/language-Python-blue)
-![Codename: Grimoire](https://img.shields.io/badge/codename-Grimoire-purple)
-![License: Proprietary](https://img.shields.io/badge/license-Proprietary-lightgrey)
+>>![Project Status: Experimental](https://img.shields.io/badge/status-experimental-orange)     ![Python](https://img.shields.io/badge/language-Python-blue)     ![Codename: Grimoire](https://img.shields.io/badge/codename-Grimoire-purple)     ![License: Proprietary](https://img.shields.io/badge/license-Proprietary-lightgrey)   **||**
 
 ---
 
-## Table of Contents
+# Table of Contents
+
 1. [Overview](#overview)
 2. [Design Philosophy](#design-philosophy)
 3. [System Architecture](#system-architecture)
@@ -27,10 +26,10 @@
 
 # Overview
 
-**Grimoire v4.5** is a **meta-educational AI system** designed to automatically create, evaluate, and evolve **instructional workflows**.  
-It acts as both a *teacher* and a *scribe*, transforming user-defined purposes into self-contained learning frameworks that humans or AI systems can follow.
+**Recursive_Grimoire_ v1.13.0** is a **meta-educational AI system** that conjures, evaluates, and evolves **instructional workflows** automatically.
+It functions both as a *teacher* and a *scribe*, translating user intent into self-contained learning frameworks that recursively generate new instructions for humans or AI agents.
 
-Each workflow functions as a **spell of knowledge**—a structured incantation of tasks, dependencies, and logic sequences—capable of recursively generating new forms of instruction.
+Each workflow is a **spell of knowledge**, structured with tasks, dependencies, and logic sequences, capable of **recursive self-expansion**.
 
 ---
 
@@ -38,157 +37,196 @@ Each workflow functions as a **spell of knowledge**—a structured incantation o
 
 > “Each workflow teaches the next workflow how to teach.”
 
-Drawing inspiration from **grimoires**—ancient books of magic containing rituals, invocations, and correspondences—this system encodes **instructional intelligence** into structured templates.  
-Every generated workflow carries the potential to reproduce itself through recursive synthesis, forming a lineage of evolving pedagogical entities.
+Inspired by **ancient grimoires**, Recursive_Grimoire_ encodes **instructional intelligence** into structured templates.
+Every generated workflow is a living artifact, forming a **lineage of evolving pedagogical entities**, and combining mystical symbolism with systematic AI reasoning.
 
 ---
 
 # System Architecture
 
-| Component | Purpose | Description |
-|------------|----------|-------------|
-| **generator/** | Workflow synthesis engine | Converts abstract user intent into structured guides and templates |
-| **ai_core/** | Orchestration nucleus | Controls recursive flow, dependencies, and regeneration |
-| **ai_memory/** | Knowledge archive | Stores and retrieves generated workflows |
-| **ai_validation/** | Schema guardian | Ensures structural integrity and completeness |
-| **ai_evaluation/** | Reflective analysis | Grades clarity and internal coherence |
-| **ai_visualization/** | Manifestation tools | Converts dependency data into graphs and diagrams |
-| **ai_monitoring/** | Conscious oversight | Logs workflow generation and evolution events |
-| **data/templates/** | Archetypal blueprints | Predefined structures for instructional genres |
-| **docs/** | Meta documentation | Contains architectural and theoretical references |
+| Component             | Purpose                   | Description                                                     |
+| --------------------- | ------------------------- | --------------------------------------------------------------- |
+| **generator/**        | Workflow synthesis engine | Translates abstract intent into structured guides and templates |
+| **ai_core/**          | Orchestration nucleus     | Handles recursive flow, module dependencies, and regeneration   |
+| **ai_memory/**        | Knowledge archive         | Stores and versions generated workflows for traceable lineage   |
+| **ai_validation/**    | Schema guardian           | Ensures structural integrity and completeness of modules        |
+| **ai_evaluation/**    | Reflective analysis       | Grades clarity, coverage, expandability, and AI-readability     |
+| **ai_visualization/** | Manifestation tools       | Converts dependency graphs into Graphviz diagrams               |
+| **ai_monitoring/**    | Conscious oversight       | Logs generation events, recursion loops, and evolution          |
+| **data/templates/**   | Archetypal blueprints     | Predefined instructional structures for multiple domains        |
+| **docs/**             | Meta documentation        | Contains theoretical references, architecture, and magical lore |
 
 ---
 
 # Core Features
 
-* **Recursive Workflow Generation** — Each output can seed future workflows.
-* **Bimodal Representation** — Produces Markdown (for humans) and JSON (for machines).
-* **Schema-Driven Validation** — Ensures logical consistency across modules.
-* **Persistent Memory System** — Archives and versions all outputs.
-* **Self-Evaluative Feedback Loop** — Measures clarity and completeness.
-* **Visual Export** — Renders dependency networks as Graphviz diagrams.
-* **Structured Logging** — Tracks every generation event in `logs/workflow.log`.
+* **Recursive Workflow Generation** — Every output can seed future workflows.
+* **Bimodal Representation** — Markdown for humans; minified JSON for machines.
+* **Dependency Graph DAG** — Visualizes module interconnections and avoids conflicts.
+* **Schema-Driven Validation** — Maintains logical consistency across all phases.
+* **Persistent Memory System** — Archives all outputs with full version history.
+* **Self-Evaluative Feedback Loop** — Evaluates clarity, coverage, and AI interpretability.
+* **Visual Export** — Graphviz diagrams for human inspection of workflow dependencies.
+* **Structured Logging** — Tracks all generation events in `logs/workflow.log`.
+* **Mystical Submodule Layering** — Optional arcane-themed modules for readability (~30% theme).
 
 ---
 
 # How It Works
 
-1. **Invocation** — User defines the purpose, audience, and delivery mode.  
-2. **Generation** — `generator/main.py` synthesizes the workflow structure.  
-3. **Validation** — Schema verification ensures completeness and logic.  
-4. **Evaluation** — Quality metrics measure clarity and instructional depth.  
-5. **Reflection** — System logs and stores results for recursive evolution.  
+1. **Invocation** — User specifies workflow purpose, audience, and style.
+2. **Phase Generation** — `generator/main.py` constructs the **six-phase workflow**:
 
-This recursive design ensures every workflow is both *an artifact* and *an algorithm*—a blueprint for self-replicating knowledge.
+   * **Phase 1:** Initialization & Variable Acquisition
+   * **Phase 1.5:** Objective Refinement (abstract → measurable goals)
+   * **Phase 2:** Human-Readable How-To Generation
+   * **Phase 3:** Modular Expansion & Reusability
+   * **Phase 4:** Evaluation & Quality Assurance
+   * **Phase 5:** Regeneration & Evolution
+3. **Validation** — Schema verification ensures completeness, dependency integrity, and naming uniqueness.
+4. **Evaluation** — Metrics measure clarity, coverage, expansion potential, and AI translatability.
+5. **Reflection & Regeneration** — Versioning, minified JSON export, and recursive self-improvement loops.
+
+---
+
+# Operational Workflow (Grimoire-Themed)
+
+```mermaid
+%% Recursive_Grimoire_ Workflow
+flowchart TD
+    classDef phase fill:#6b2b99,stroke:#e0c0ff,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef module fill:#a76ddf,stroke:#ffffff,stroke-width:1px,color:#ffffff,font-style:italic;
+    classDef feedback fill:#ffb347,stroke:#ff7f50,stroke-width:2px,color:#000000;
+
+    P1["🪄 Phase 1: Initialization & Variable Acquisition"]:::phase
+    P1_5["🔮 Phase 1.5: Objective Refinement"]:::phase
+    P2["📜 Phase 2: Human-Readable How-To Generation"]:::phase
+    P3["🧩 Phase 3: Modular Expansion & Reusability"]:::phase
+    P4["🪞 Phase 4: Evaluation & Quality Assurance"]:::phase
+    P5["♾ Phase 5: Regeneration & Evolution"]:::phase
+
+    M1A["ObjectiveRefinement"]:::module
+    M1B["ContextMapping"]:::module
+    M2A["StageWriter"]:::module
+    M2B["StepDetailer"]:::module
+    M3A["ModuleGraphBuilder"]:::module
+    M3B["DependencyResolver"]:::module
+    M4A["ClarityAssessor"]:::module
+    M4B["CoverageTester"]:::module
+    M4C["TranslatorValidator"]:::module
+    M5A["VersionManager"]:::module
+    M5B["FeedbackIntegrator"]:::module
+
+    %% Connections
+    P1 --> P1_5 --> P2 --> P3 --> P4 --> P5
+    P1_5 --> M1A --> M1B
+    P2 --> M2A --> M2B
+    P3 --> M3A --> M3B
+    P4 --> M4A --> M4B --> M4C
+    P5 --> M5A --> M5B
+
+    P5 -->|♻ Recursion| P1
+    M5B -->|✨ Feedback| P3
+```
+
+> Each phase is infused with subtle **Grimoire aesthetics** (purple hues, mystical icons, arcane module names) to evoke magical reasoning while remaining functional.
 
 ---
 
 # Example Templates
 
-Grimoire v4.5 ships with archetypal templates stored in `data/templates/`:
-
-| Template | Focus | Primary Use |
-|-----------|--------|-------------|
-| `training_curriculum_template.json` | Education | Build structured learning programs |
-| `technical_procedure_template.json` | Engineering | Standardize technical or scientific procedures |
-| `creative_writing_template.json` | Arts | Generate literary, poetic, or narrative workflows |
-| `meta_reflection_template.json` | Metacognition | Evaluate and evolve cognitive frameworks |
-
-Each template can be invoked and customized using CLI or direct module calls.
+| Template                            | Focus         | Primary Use                              |
+| ----------------------------------- | ------------- | ---------------------------------------- |
+| `training_curriculum_template.json` | Education     | Build structured learning programs       |
+| `technical_procedure_template.json` | Engineering   | Standardize technical workflows          |
+| `creative_writing_template.json`    | Arts          | Generate literary or narrative workflows |
+| `meta_reflection_template.json`     | Metacognition | Evaluate and evolve cognitive frameworks |
 
 ---
 
-# Operational Workflow
-
-```mermaid
-flowchart TD
-    A[User Input] --> B[Generator]
-    B --> C[Schema Validator]
-    C --> D[Memory Store]
-    D --> E[Evaluation Engine]
-    E --> F[Visualization Exporter]
-    F --> G[Logger]
-    G --> H[Recursive Regeneration]
-```
 # Intended Users
-### AI Developers — 
-To experiment with meta-educational systems.
 
-### Educators & Trainers — 
-To auto-generate curriculum structures.
+* **AI Developers** — Explore recursive instructional AI.
+* **Educators & Trainers** — Auto-generate curriculum structures.
+* **Writers & Designers** — Create recursive creative frameworks.
+* **Research Institutions** — Investigate AI-guided pedagogy and meta-learning.
 
-### Writers & Designers — 
-To design recursive creative frameworks.
-
-### Research Institutions — 
-To explore AI-guided pedagogical recursion.
+---
 
 # Technology Stack
 
-### Python 3.10+
+* Python 3.10+
+* JSON + Markdown hybrid architecture
+* Graphviz (optional) for visualization
+* pytest for validation testing
+* Custom AI reasoning modules (planned)
 
-### JSON + Markdown Hybrid Architecture
-
-### Graphviz (optional) for visualization
-
-### pytest for validation testing
-
-### Custom AI Reasoning Modules (future)
+---
 
 # Setup & Usage
 
-### Clone the repository:
+### Clone Repository
 
-> git clone https://github.com/Tommy-Raven/AI_instructions_workflow.git
+```bash
+git clone https://github.com/Tommy-Raven/AI_instructions_workflow.git
+cd AI_instructions_workflow
+```
 
-> cd AI_instructions_workflow
+### Install Dependencies
 
-### Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-> pip install -r requirements.txt
+### Run CLI
 
-### Run the CLI:
+```bash
+python cli.py --purpose "Design an AI ethics curriculum"
+```
 
-> python cli.py --purpose "Design an AI ethics curriculum"
+### View Results
 
-### View results
+* **Generated JSON:** `data/workflows/`
+* **Logs:** `logs/workflow.log`
+* **Optional .dot Graph:** `build/workflow_graph.dot`
 
-**Generated JSON** → *data/workflows/*
+---
 
-**Logs** → *logs/workflow.log*
+# Future Enhancements
 
-***Optional*** **.dot graph** → *build/workflow_graph.dot*
+* Adaptive semantic embeddings for self-learning
+* Domain-specific plugin grimoires
+* Multi-agent recursive co-generation
+* Interactive dashboard visualization
+* Open LLM integration for semantic workflow synthesis
+* Automatic derivative workflow generation with lineage tracking
 
-## Future Enhancements
+---
 
-Adaptive self-learning loop using semantic embeddings
+# Contributing
 
-Domain-specific plugin grimoires (medical, mechanical, creative)
+Open to contributions around:
 
-Multi-agent recursive co-generation
+* Recursive orchestration and DAG management
+* Memory optimization and versioning
+* Multi-domain schema integration
 
-Interactive visual dashboard
+Submit issues or pull requests via GitHub.
 
-Integration with open LLMs for semantic workflow synthesis
+---
 
-## Contributing
+# License
 
-Contributions are welcome—especially around recursive orchestration, AI memory optimization, and multi-domain schema integration.
-
-Open an issue or pull request via GitHub.
-
-## License
-Proprietary — In Research Phase. 
-*see: LICENSE*
-
+Proprietary — Research Phase.
 All rights reserved © 2025 Tommy Raven / Raven Recordings
 
-## Contact
+---
 
-Author: Tommy Raven
+# Contact
 
-Email: [GitHub Issues Preferred]
+* **Author:** Tommy Raven
+* **Email:** GitHub Issues Preferred
+* **Codename:** Recursive_Grimoire_ v1.13.0
+* **Repository:** [github.com/Tommy-Raven/AI_instructions_workflow](https://github.com/Tommy-Raven/AI_instructions_workflow)
 
-Project Codename: Grimoire v4.5
-
-Repository: github.com/Tommy-Raven/AI_instructions_workflow
+---
