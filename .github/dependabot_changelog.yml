@@ -1,0 +1,35 @@
+name: 🧾 Update Changelog for Dependabot Merges
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  changelog_entry:
+    if: github.actor == 'dependabot[bot]' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧾 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🪶 Append Dependabot update to CHANGELOG.md
+        run: |
+          DATE=$(date +"%Y-%m-%d")
+          TITLE="${{ github.event.pull_request.title }}"
+          URL="${{ github.event.pull_request.html_url }}"
+          echo "## [$DATE] - Dependency Update" >> CHANGELOG.md
+          echo "- $TITLE ([PR #${{ github.event.pull_request.number }}]($URL))" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "chore: update CHANGELOG for Dependabot PR #${{ github.event.pull_request.number }}"
+          git push
+
+      - name: ✅ Confirm log update
+        run: echo "CHANGELOG.md updated for Dependabot PR #${{ github.event.pull_request.number }}"
