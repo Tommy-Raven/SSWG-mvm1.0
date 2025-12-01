@@ -1,25 +1,51 @@
-%%----------------------------------------
-%%  Core Module Data Flow (ai_core package)
-%%  Color Legend:
-%%    🟧 Orange = Core Module
-%%    🟩 Green  = Supporting Package Folder
-%%    🟦 Cyan   = Input/Output Interface
-%%----------------------------------------
+# Visualization Guide — AI Instructions Workflow Generator
+
+## Overview
+
+This guide details the visualization pipeline for recursive workflow generation and evaluation. The system produces both live and static visual outputs, enabling users to trace workflow progression, recursive feedback, and module interactions.
+
+---
+
+## 🟧 Core Modules
+
+* `workflow_engine.py` — Orchestrates all workflow phases and manages execution flow.
+* `graph_engine.py` — Generates dependency and phase graphs (Mermaid / Graphviz).
+* `recursion_manager.py` — Controls recursion depth and iterative workflow expansion.
+* `evaluation_engine.py` — Calculates clarity, coverage, and translatability scores.
+* `visualizer.py` — Renders diagrams for human inspection and reporting.
+* `io_manager.py` — Handles Markdown, JSON, and Graphviz output generation.
+
+---
+
+## 🟦 Input / Output Interfaces
+
+* User CLI input triggers workflow generation.
+* Outputs include:
+
+  * Markdown documentation (`.md`)
+  * Machine-readable JSON (`.json`)
+  * Graph visualization files (`.gv` / `.png`)
+
+---
+
+## Data Flow Diagram
 
 flowchart LR
-    %% INPUT AND OUTPUT
-    U[🟦 User Input / CLI]:::cli --> WF[🟧 workflow_engine.py]:::module
-    WF --> GE[🟧 graph_engine.py]:::module
-    GE --> RM[🟧 recursion_manager.py]:::module
-    RM --> EE[🟧 evaluation_engine.py]:::module
-    EE --> VF[🟧 visualizer.py]:::module
-    VF --> IO[🟧 io_manager.py]:::module
-    IO --> UO[🟦 User Output (Markdown / JSON / Graphviz)]:::cli
+U[🟦 User Input / CLI]:::cli --> WF[🟧 workflow_engine.py]:::module
+WF --> GE[🟧 graph_engine.py]:::module
+GE --> RM[🟧 recursion_manager.py]:::module
+RM --> EE[🟧 evaluation_engine.py]:::module
+EE --> VF[🟧 visualizer.py]:::module
+VF --> IO[🟧 io_manager.py]:::module
+IO --> UO[🟦 User Output (Markdown / JSON / Graphviz)]:::cli
 
-    %% BACKFLOW (Evaluation Feedback Loop)
-    EE -. feedback .-> WF
-    RM -. recursion_control .-> WF
+EE -. feedback .-> WF
+RM -. recursion_control .-> WF
 
-    %% STYLING
-    classDef module fill:#FFB347,stroke:#CC7000,color:black;
-    classDef cli fill:#00CED1,stroke:#007C80,color:black;
+---
+
+## Notes
+
+* Evaluation and recursion feedback loops ensure that each workflow iteration refines and improves prior outputs.
+* Visualization files are automatically updated with each recursive generation cycle.
+* The guide supports both CLI and programmatic invocation for flexible deployment.

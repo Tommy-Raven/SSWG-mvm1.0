@@ -1,99 +1,133 @@
-%%==========================================================
-%% AI Instructional Workflow Generator - System Architecture
-%%==========================================================
+# AI Instructional Workflow Generator — System Architecture
 
-flowchart TB
+## Overview
 
-|     Color     | Category                              | Example Folder                                                  |
-| :-----------: | :------------------------------------ | :-------------------------------------------------------------- |
-|  🔵 **Blue**  | Root / Project Base                   | `/ai-instructional-workflow-generator/`                         |
-|  🟩 **Green** | Active Package (importable namespace) | `/ai_core/`, `/ai_recursive/`, `/ai_memory/`, `/ai_evaluation/` |
-| 🟧 **Orange** | Module (.py file)                     | `/ai_core/phases/evaluation.py`                                 |
-| 🟪 **Purple** | Test or Validation Layer              | `/tests/test_ai_core.py`                                        |
-| 🟨 **Yellow** | Config / Schema / Metadata            | `/schemas/*.json`, `/requirements.txt`                          |
-|   🟥 **Red**  | Documentation & Diagrams              | `/docs/ARCHITECTURE.md`, `/docs/AI_RECURSION.md`                |
-|  🟦 **Cyan**  | Interface / Legacy CLI Layer          | `/generator/main.py`, `/generator/workflow.py`                  |
+This document outlines the architecture of **Recursive_Grimoire_ v1.13.0**, a modular AI system for generating, evaluating, and recursively improving instructional workflows. The system supports human- and machine-readable outputs, persistent memory, recursive feedback loops, and deterministic execution. The architecture emphasizes clear modular separation, recursive workflow design, and integration with safety, constitution, and risk pipelines.
 
+---
 
-    %% ROOT
-    ROOT[🔵 ai-instructional-workflow-generator]:::root
+## Layers and Modules
 
-    %% LEGACY / INTERFACE
-    ROOT --> G[🟦 generator/]:::cli
-    G --> Gm[🟧 main.py]:::module
-    G --> Gw[🟧 workflow.py]:::module
-    G --> Ge[🟧 evaluation.py]:::module
-    G --> Gr[🟧 recursive_expansion.py]:::module
-    G --> Gx[🟧 exporters.py]:::module
-    G --> Gu[🟧 utils.py]:::module
+### Root / Project Base
 
-    %% CORE LOGIC
-    ROOT --> C[🟩 ai_core/]:::package
-    C --> CW[🟧 workflow.py]:::module
-    C --> CP[🟩 phases/]:::package
-    CP --> CP1[🟧 initialization.py]:::module
-    CP --> CP2[🟧 refinement.py]:::module
-    CP --> CP3[🟧 modularization.py]:::module
-    CP --> CP4[🟧 human_readable.py]:::module
-    CP --> CP5[🟧 evaluation.py]:::module
-    CP --> CP6[🟧 regeneration.py]:::module
-    C --> CR[🟧 registry.py]:::module
+* Configuration, environment, and standard project files
+* `.editorconfig`, `.gitignore`, `README.md`, `CHANGELOG.md`, `LICENSE`
+* Dependency management: `pyproject.toml`, `REQUIREMENTS.txt`
+* Packaging instructions: `make_repo_zip_instructions.txt`
 
-    %% RECURSIVE ENGINE
-    ROOT --> R[🟩 ai_recursive/]:::package
-    R --> RE[🟧 expansion.py]:::module
-    R --> RM[🟧 merging.py]:::module
-    R --> RR[🟧 registry.py]:::module
-    R --> RV[🟧 evaluator.py]:::module
-    R --> RL[🟧 memory.py]:::module
+### Interface / Legacy CLI
 
-    %% MEMORY SYSTEM
-    ROOT --> M[🟩 ai_memory/]:::package
-    M --> MS[🟧 store.py]:::module
-    M --> ML[🟧 lineage.py]:::module
-    M --> MM[🟧 metrics.py]:::module
-    M --> MA[🟧 analytics.py]:::module
+* `/generator/` — CLI scripts for workflow invocation
+* Modules: `main.py`, `workflow.py`, `evaluation.py`, `recursive_expansion.py`, `exporters.py`, `utils.py`
+* Entry points for initiating workflow generation and recursive expansion
 
-    %% EVALUATION
-    ROOT --> E[🟩 ai_evaluation/]:::package
-    E --> EB[🟧 base.py]:::module
-    E --> EC[🟧 clarity.py]:::module
-    E --> EE[🟧 expandability.py]:::module
-    E --> ET[🟧 translatability.py]:::module
-    E --> ER[🟧 registry.py]:::module
+### Core Orchestration — `ai_core/`
 
-    %% SUPPORTING DATA + SCHEMAS
-    ROOT --> D[🟩 data/]:::package
-    D --> DT[🟩 templates/]:::package
-    D --> DO[🟩 outputs/]:::package
+* Handles workflow logic, module management, and recursive control
+* Subpackages and modules:
 
-    ROOT --> S[🟩 schemas/]:::package
-    S --> SW[🟨 workflow_schema.json]:::config
-    S --> SM[🟨 module_schema.json]:::config
-    S --> SE[🟨 evaluation_schema.json]:::config
+  * `phases/` — Initialization, Objective Refinement, Modularization, Human-Readable Generation, Evaluation, Regeneration
+  * `workflow.py` — Main orchestration engine
+  * `registry.py` — Central storage of workflow metadata
 
-    %% TESTS
-    ROOT --> T[🟩 tests/]:::package
-    T --> TA[🟪 test_ai_core.py]:::test
-    T --> TR[🟪 test_recursive.py]:::test
-    T --> TM[🟪 test_memory.py]:::test
-    T --> TE[🟪 test_evaluation.py]:::test
-    T --> TX[🟪 test_exporters.py]:::test
+### Recursive Engine — `ai_recursive/`
 
-    %% DOCS
-    ROOT --> DOC[🟥 docs/]:::docs
-    DOC --> DA[🟥 ARCHITECTURE.md]:::docs
-    DOC --> DR[🟥 AI_RECURSION.md]:::docs
-    DOC --> DM[🟥 METRICS_SYSTEM.md]:::docs
-    DOC --> DE[🟥 EVOLUTION_LOGGING.md]:::docs
-    DOC --> DG[🟥 CONTRIBUTOR_GUIDE.md]:::docs
+* Expansion engine: generates new workflows from previous outputs
+* Merging engine: resolves conflicts and consolidates workflows
+* Evaluator: scores recursive outputs for clarity, coverage, and translatability
+* Registry and memory interfaces: track lineage and versioning
 
-    %% STYLING
-    classDef root fill:#0096FF,stroke:#003366,color:white;
-    classDef package fill:#00C957,stroke:#006400,color:white;
-    classDef module fill:#FFB347,stroke:#CC7000,color:black;
-    classDef config fill:#FFD700,stroke:#CCAC00,color:black;
-    classDef test fill:#A020F0,stroke:#5D007A,color:white;
-    classDef docs fill:#FF6B6B,stroke:#B22222,color:white;
-    classDef cli fill:#00CED1,stroke:#007C80,color:black;
+### Memory System — `ai_memory/`
 
+* Stores workflows, versioned histories, metrics, and analytics
+* Provides persistent storage for traceable recursive iterations
+
+### Evaluation — `ai_evaluation/`
+
+* Assesses workflow quality, clarity, coverage, and AI-readability
+* Provides structured feedback for recursive improvement
+
+### Supporting Data & Schemas — `data/`, `schemas/`
+
+* Templates: standardized JSON/Markdown formats for workflows
+* Outputs: generated workflows for human and machine consumption
+* JSON schemas: enforce structure, dependencies, and consistency
+
+### Safety Stack
+
+* `safety/` modules: sanitizers, safety classifiers, sandbox simulation
+* Ensures safe and policy-compliant workflow outputs
+
+### Constitution Engine — `constitution/`
+
+* Enforces rules and predicates from a rulebook
+* Approves, rejects, or flags workflows for logical consistency
+
+### Contradiction Detection & Auto-Remediation — `contradiction/`
+
+* Identifies inconsistencies such as draft vs approved conflicts
+* Automatically resolves contradictions where possible
+
+### Reproducibility & Deterministic Execution — `reproducibility/`
+
+* `DeterministicRunner`: stable execution via hashing and canonicalization
+* Reconstruct API and model metadata tracking ensure repeatable results
+
+### Web Layer — `web/`
+
+* FastAPI endpoints for workflows, runs, and inventory
+* RESTful interface for triggering workflow generation and evaluation
+
+### Testing & CI — `tests/`
+
+* Unit, integration, and acceptance tests
+* GitHub Actions workflows for CI/CD automation
+
+---
+
+## Onboarding Highlights
+
+* Each workflow teaches the next workflow how to teach
+* Recursive loops ensure continuous improvement and evolution
+* Modular structure supports clear phase-based progression
+* Outputs are versioned, archived, and fully traceable
+* Integration-friendly with safety, evaluation, and constitution pipelines
+
+---
+
+## Phase-Based Workflow Overview
+
+1. **Initialization** — Variable acquisition and setup
+2. **Objective Refinement** — Abstract goals → measurable outcomes
+3. **Human-Readable How-To Generation** — Produce Markdown/JSON instructions
+4. **Modular Expansion** — Generate reusable workflow modules
+5. **Evaluation** — Clarity, coverage, and AI-readability scoring
+6. **Regeneration & Evolution** — Recursive output and feedback integration
+
+---
+
+## Directory & File Mapping
+
+* `ai_core/` — Orchestration and workflow phases
+* `ai_recursive/` — Recursive generation, merging, memory, evaluation, registry
+* `ai_memory/` — Persistent workflow storage and metrics
+* `ai_evaluation/` — Quality assessment and feedback loops
+* `generator/` — CLI and entry points
+* `data/` — Templates and generated workflows
+* `schemas/` — JSON schema validation
+* `constitution/` — Rulebook enforcement
+* `contradiction/` — Conflict detection and auto-remediation
+* `reproducibility/` — Deterministic execution
+* `safety/` — Sanitization, classification, sandbox simulation
+* `web/` — FastAPI interface
+* `tests/` — Automated testing
+
+---
+
+## Design Principles
+
+* **Modularity:** Clear separation of orchestration, evaluation, validation, memory, and visualization
+* **Recursive Design:** Self-learning workflows with iterative improvement
+* **Traceable Outputs:** Versioned, archived, and human/machine-readable
+* **Integration-Ready:** Seamless interaction with safety, constitution, and risk pipelines
+* **Deployment-Ready:** CLI, containerization, and visualization support

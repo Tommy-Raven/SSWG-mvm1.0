@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
 """
-generator/main.py
-
-AI Instructional Workflow Generator
-Produces a minified JSON workflow document according to the "Grimoire" schema.
-#!/usr/bin/env python3
-"""
-"""
-generator/main.py — codename 'Grimoire' Version 4.5  (Merged/Unified)
-
+generator/main.py — Grimoire v1.0 MVM
 AI Instructional Workflow Generator
 -----------------------------------
-Combines the interactive CLI and programmatic JSON builder into a single, cohesive engine.
-Features:
-- Interactive or command-line argument mode
-- Recursive expansion hooks
-- Markdown + JSON export (pretty or minified)
-- Compatible with Grimoire schema v4.5
+Modular, phase-based workflow generator with recursive self-expansion.
+Generates both human-readable (Markdown) and machine-readable (JSON) outputs.
 """
 
 from __future__ import annotations
-import os, sys, json, uuid, argparse, datetime, logging
+import os
+import sys
+import json
+import argparse
+import datetime
+import logging
 from typing import Dict, Any, Optional
 
 # ─── Local Imports ────────────────────────────────────────────────
-from workflow import Workflow
-from exporters import export_markdown, export_json
-from utils import generate_workflow_id, log
-from recursive_expansion import recursive_expand
-
+try:
+    from ai_core.workflow import Workflow
+    from ai_core.exporters import export_json, export_markdown
+    from ai_recursive.expansion import generate as recursive_generate
+    from ai_recursive.merging import merge as recursive_merge
+    from ai_monitoring.telemetry import record as telemetry_record
+    from ai_validation.schema_tracker import validate_schema
+    from generator.recursion_manager import RecursionManager
+    from ai_core.utils import generate_workflow_id, log
+except ImportError as e:
+    print(f"Error importing local modules: {e}")
+    sys.exit(1)
 
 # ─── Logging Setup ────────────────────────────────────────────────
 logger = logging.getLogger("generator")
@@ -37,46 +37,47 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
 
-
 # ─── Input Parsing ────────────────────────────────────────────────
 def parse_user_input(argv: Optional[list] = None) -> Dict[str, Any]:
-    """Parse CLI args or fall back to interactive prompts."""
     parser = argparse.ArgumentParser(description="AI Instructional Workflow Generator")
     parser.add_argument("--purpose", "-p", type=str, help="Purpose of the workflow")
     parser.add_argument("--audience", "-a", type=str, help="Target audience")
-    parser.add_argument("--delivery_mode", "-d", type=str, help="Delivery modes (e.g., text,code)")
-    parser.add_argument("--expansion_mode", "-x", type=str, help="Expansion modes (e.g., recursive,modular)")
-    parser.add_argument("--evaluation_method", "-e", type=str, help="Evaluation method (self-refinement, peer-review)")
-    parser.add_argument("--style", "-s", type=str, help="Workflow style/voice (technical, friendly, wizardly)")
+    parser.add_argument("--delivery_mode", "-d", type=str, help="Delivery modes (text, code)")
+    parser.add_argument("--expansion_mode", "-x", type=str, help="Expansion modes (recursive, modular)")
+    parser.add_argument("--evaluation_method", "-e", type=str, help="Evaluation method")
+    parser.add_argument("--style", "-s", type=str, help="Workflow style/voice")
     parser.add_argument("--title", "-t", type=str, default="AI Instructional Workflow Generator")
-    parser.add_argument("--out", "-o", type=str, default="./build/ai_workflow_output.json", help="Output JSON path")
+    parser.add_argument("--out", "-o", type=str, default="./data/outputs/ai_workflow_output.json")
     parser.add_argument("--pretty", action="store_true", help="Write pretty JSON output")
     parser.add_argument("--overwrite", action="store_true", help="Allow overwriting existing files")
     parser.add_argument("--version", action="store_true", help="Print version and exit")
-
     args = parser.parse_args(argv)
 
     if args.version:
-        print("AI Instructional Workflow Generator v4.5.0")
+        print("AI Instructional Workflow Generator v1.0 MVM")
         sys.exit(0)
 
-    # Fallback interactive prompts if args missing
-    def ask(val, prompt):
-        return val or input(prompt).strip()
+    # Helper for prompting if missing
+    def ask(val: Optional[str], prompt: str) -> str:
+        if val:
+            return val
+        try:
+            return input(prompt).strip()
+        except EOFError:
+            return ""
 
     return {
-        "purpose": ask(args.purpose, "Enter the workflow purpose: "),
-        "audience": ask(args.audience, "Enter target audience (e.g., beginner, expert): "),
-        "delivery_mode": [m.strip() for m in (args.delivery_mode or input("Enter delivery modes (text,code): ")).split(",")],
-        "expansion_mode": [m.strip() for m in (args.expansion_mode or input("Enter expansion modes (recursive,modular): ")).split(",")],
-        "evaluation_method": ask(args.evaluation_method, "Enter evaluation method (self-refinement, peer-review, simulation): "),
-        "style": ask(args.style, "Enter workflow style/voice (technical, friendly, wizardly): "),
+        "purpose": ask(args.purpose, "Enter workflow purpose: "),
+        "audience": ask(args.audience, "Enter target audience: "),
+        "delivery_mode": [m.strip() for m in (args.delivery_mode or "text,code").split(",")],
+        "expansion_mode": [m.strip() for m in (args.expansion_mode or "recursive,modular").split(",")],
+        "evaluation_method": ask(args.evaluation_method, "Enter evaluation method: "),
+        "style": ask(args.style, "Enter workflow style/voice: "),
         "title": args.title,
         "out_path": args.out,
         "pretty": args.pretty,
         "overwrite": args.overwrite,
     }
-
 
 # ─── Workflow Assembly ────────────────────────────────────────────
 def assemble_metadata(params: Dict[str, Any]) -> Dict[str, Any]:
@@ -91,26 +92,37 @@ def assemble_metadata(params: Dict[str, Any]) -> Dict[str, Any]:
         "expansion_mode": params["expansion_mode"],
         "evaluation_method": params["evaluation_method"],
         "language": "en-US",
+        "schema_version": "1.0",
+        "phase_metadata": {},
     }
-
 
 def assemble_workflow(params: Dict[str, Any]) -> Dict[str, Any]:
     workflow_id = generate_workflow_id()
     metadata = assemble_metadata(params)
 
-    # Create Workflow phases using Workflow class
     wf = Workflow(workflow_id, params)
     wf.run_all_phases()
 
-    # Perform recursive expansion
-    expanded = recursive_expand({
-        "workflow_id": wf.workflow_id,
-        "objective": wf.results.get("Phase 1 — Initialization", {}).get("objective", params["purpose"]),
-        "stages": wf.results.get("Phase 2 — How-To Generation", {}),
-        "modules": wf.results.get("Phase 3 — Modularization", {}),
-    })
+    # Recursive expansion (safe fallback if missing)
+    expanded = {}
+    try:
+        expanded = recursive_generate({
+            "workflow_id": workflow_id,
+            "objective": wf.results.get("Phase 1 — Initialization", {}).get("objective", params["purpose"]),
+            "stages": wf.results.get("Phase 2 — How-To Generation", {}),
+            "modules": wf.results.get("Phase 3 — Modularization", {}),
+        })
+        expanded = recursive_merge(expanded)
+    except Exception as e:
+        logger.warning(f"Recursive expansion failed: {e}")
 
-    return {
+    # Telemetry record (optional)
+    try:
+        telemetry_record(workflow_id, expanded)
+    except Exception:
+        pass
+
+    workflow_data = {
         "workflow_id": workflow_id,
         "title": params["title"],
         "metadata": metadata,
@@ -119,8 +131,14 @@ def assemble_workflow(params: Dict[str, Any]) -> Dict[str, Any]:
         "timestamp": metadata["created"],
     }
 
+    try:
+        validate_schema(workflow_data)
+    except Exception as e:
+        logger.warning(f"Schema validation skipped/failed: {e}")
 
-# ─── Exporters ───────────────────────────────────────────────────
+    return workflow_data
+
+# ─── Export ──────────────────────────────────────────────────────
 def export_all(workflow: Dict[str, Any], out_path: str, pretty: bool = False, overwrite: bool = True):
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
@@ -128,39 +146,9 @@ def export_all(workflow: Dict[str, Any], out_path: str, pretty: bool = False, ov
         logger.error("File exists and overwrite=False: %s", out_path)
         sys.exit(2)
 
-    # JSON Export
-    with open(out_path, "w", encoding="utf-8") as f:
-        if pretty:
-            json.dump(workflow, f, indent=2, ensure_ascii=False)
-        else:
-            json.dump(workflow, f, separators=(",", ":"), ensure_ascii=False)
-
-    logger.info("Workflow JSON saved to %s", out_path)
-
-    # Markdown export (human-readable)
-    export_markdown_dict(workflow)
-    logger.info("Markdown export complete.")
-
-
-def export_markdown_dict(workflow_dict: Dict[str, Any]):
-    md_lines = [
-        f"# Workflow {workflow_dict['workflow_id']}",
-        f"**Title:** {workflow_dict['title']}",
-        f"**Purpose:** {workflow_dict['metadata']['purpose']}",
-        "",
-        "## Phases",
-    ]
-    for name, content in workflow_dict["phases"].items():
-        md_lines.append(f"### {name}")
-        md_lines.append(str(content))
-    md_content = "\n".join(md_lines)
-
-    path = f"data/templates/{workflow_dict['workflow_id']}.md"
-    os.makedirs("data/templates", exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(md_content)
-    logger.info("Markdown saved: %s", path)
-
+    export_json(workflow, out_path, pretty)
+    export_markdown(workflow)
+    logger.info("Workflow export complete: JSON -> %s", out_path)
 
 # ─── Main Entrypoint ─────────────────────────────────────────────
 def main(argv: Optional[list] = None) -> int:
@@ -172,7 +160,6 @@ def main(argv: Optional[list] = None) -> int:
     print("\n--- Workflow Preview ---\n", preview, "...\n")
     logger.info("Workflow generation complete for ID: %s", workflow_data["workflow_id"])
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
