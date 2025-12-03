@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Awaitable, Callable, Coroutine, Iterable, List, Union
+from typing import Any, Awaitable, Callable, Iterable, List, Union
 
 logger = logging.getLogger("async_executor")
 logger.setLevel(logging.INFO)
@@ -18,12 +18,12 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
 
-AsyncTaskType = Union[Callable[..., Awaitable[Any]], Coroutine[Any, Any, Any]]
+AsyncTaskType = Union[Callable[..., Awaitable[Any]], Awaitable[Any]]
 
 
 async def run_task(task: AsyncTaskType, *args: Any, **kwargs: Any) -> Any:
     """
-    Run a single asynchronous task (function or coroutine object) with logging.
+    Run a single asynchronous task (function or awaitable object) with logging.
 
     Returns:
         The task result, or None if the task raised an exception.
@@ -53,12 +53,12 @@ async def run_tasks_concurrently(
 
     Args:
         tasks:
-            Iterable of async callables or coroutine objects.
+            Iterable of async callables or awaitable objects.
 
     Returns:
         List of task results, with failures converted to None.
     """
-    coroutines: List[Coroutine[Any, Any, Any]] = []
+    coroutines: List[Awaitable[Any]] = []
     for task_item in tasks:
         if callable(task_item):
             coroutines.append(task_item(*args, **kwargs))

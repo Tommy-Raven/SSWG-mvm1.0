@@ -3,7 +3,7 @@
 generator/exporters.py — Export helpers for SSWG.
 
 Supports exporting workflows to Markdown and JSON, plus async helpers
-for running both exports in parallel.
+for running both exports concurrently in a thread pool.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
-from typing import Any, Awaitable, Callable, Dict
+from typing import Any, Callable, Dict
 
 from .utils import log
 
@@ -41,11 +41,6 @@ def export_markdown(workflow: Any, out_dir: str = "templates") -> str:
     Args:
         workflow:
             Workflow-like object.
-        out_dir:
-            Output directory for the file.
-
-    Returns:
-        Path to the written Markdown file.
     """
     ensure_dir_exists(out_dir)
     filename = os.path.join(out_dir, f"{workflow.workflow_id}.md")
@@ -86,11 +81,6 @@ def export_json(workflow: Any, out_dir: str = "templates") -> str:
     Args:
         workflow:
             Workflow-like object.
-        out_dir:
-            Output directory for the file.
-
-    Returns:
-        Path to the written JSON file.
     """
     ensure_dir_exists(out_dir)
     filename = os.path.join(out_dir, f"{workflow.workflow_id}.json")
@@ -114,19 +104,28 @@ def export_json(workflow: Any, out_dir: str = "templates") -> str:
 
 # ─── Async Helpers ───────────────────────────────────────────────
 
+
 async def run_task(
-    task_func: Callable[..., Awaitable[Any]],
+    task_func: Callable[..., Any],
     *args: Any,
     **kwargs: Any,
 ) -> Any:
     """
-    Run an async task and catch exceptions, logging errors.
+    Run a synchronous task in a thread pool and catch exceptions.
+
+    Args:
+        task_func:
+            Synchronous function to run (e.g. export_json / export_markdown).
 
     Returns:
-        The result of the async function, or None if it failed.
+        The result of the function, or None if it failed.
     """
+    loop = asyncio.get_running_loop()
     try:
-        return await task_func(*args, **kwargs)
+        return await loop.run_in_executor(
+            None,
+            lambda: task_func(*args, **kwargs),
+        )
     except Exception as exc:  # pylint: disable=broad-exception-caught
         log(f"Async task {task_func.__name__} failed: {exc}")
         return None
@@ -134,7 +133,7 @@ async def run_task(
 
 async def export_workflow_async(workflow: Any, out_dir: str = "templates") -> None:
     """
-    Run both JSON and Markdown export tasks asynchronously.
+    Run both JSON and Markdown export tasks asynchronously in a thread pool.
     """
     await asyncio.gather(
         run_task(export_json, workflow, out_dir),
