@@ -1,80 +1,129 @@
-#Recursive_Grimoire_ v1.13.0
-Timestamp: {datetime.utcnow().isoformat()}Z
-"""
-out_path = os.path.join(os.getcwd(), "git_REST_API.md")
-os.makedirs(os.path.dirname(out_path), exist_ok=True)
-with open(out_path, "w", encoding="utf-8") as f:
-f.write(content)
-print(f"Created or updated {out_path}")
+name: SSWG–MVM: Generate git_REST_API.md
 
-if name == "main":
-main()
-
-#**Purpose:**  
-#This GitHub Action automatically runs the above Python script, commits any updates,  
-#and opens a pull request if changes are detected.
-
-**File path:**  
-`.github/workflows/add_git_REST_API.yml`
-
-name: Generate git_REST_API.md
-
+# ───────────────────────────────────────────────
+# EVENT TRIGGERS
+# ───────────────────────────────────────────────
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths:
+      - "scripts/write_git_REST_API_md.py"
+      - ".github/workflows/sswg-generate-git-rest-api.yml"
   pull_request:
     types: [opened, reopened, synchronize]
+    branches: ["main"]
 
+# ───────────────────────────────────────────────
+# PERMISSIONS
+# ───────────────────────────────────────────────
 permissions:
   contents: write
   pull-requests: write
 
+# ───────────────────────────────────────────────
+# JOB DEFINITION
+# ───────────────────────────────────────────────
 jobs:
-  generate-doc:
-    runs-on: debian-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  generate-rest-api-doc:
+    name: Generate git_REST_API.md (SSWG–MVM)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
 
-      - name: Setup Python
+    steps:
+      # ----------------------------------------------------
+      # 1. Checkout
+      # ----------------------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for PR diff, change detection
+
+      # ----------------------------------------------------
+      # 2. Setup Python
+      # ----------------------------------------------------
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
+          # Optional: install SSWG local project (editable mode)
+          if [ -f pyproject.toml ]; then pip install -e .; fi
 
-      - name: Run generator script
+      # ----------------------------------------------------
+      # 3. Run Generator Script
+      # ----------------------------------------------------
+      - name: Generate git_REST_API.md
+        id: generate_doc
         run: |
-          python scripts/write_git_REST_API_md.py
+          echo "[SSWG-MVM] Running documentation generator script..."
+          python3 scripts/write_git_REST_API_md.py
 
-      - name: Check for changes
-        id: git_diff
+      # ----------------------------------------------------
+      # 4. Detect Changed Content
+      # ----------------------------------------------------
+      - name: Detect Changes
+        id: detect_changes
         run: |
-          git diff --exit-code || echo "changes=true" >> $GITHUB_ENV
+          if git diff --quiet git_REST_API.md; then
+            echo "doc_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "doc_changed=true" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Commit and push changes
-        if: env.changes == 'true'
+      # ----------------------------------------------------
+      # 5. Commit to Auto-Branch When Changes Exist
+      # ----------------------------------------------------
+      - name: Commit Updated Documentation
+        if: steps.detect_changes.outputs.doc_changed == 'true'
         run: |
-          git config --global user.name "Recursive_Grimoire_Bot"
+          git config --global user.name "SSWG-MVM AutoDoc Bot"
           git config --global user.email "actions@github.com"
-          branch="auto-update-$(date +'%Y%m%d-%H%M%S')"
+
+          branch="autodoc/git-rest-api-$(date +'%Y%m%d-%H%M%S')"
           git checkout -b "$branch"
+
           git add git_REST_API.md
-          git commit -m "Auto-generated git_REST_API.md via Recursive_Grimoire_ v1.13.0"
+          git commit -m "Auto-generate git_REST_API.md (SSWG-MVM v0.9.mvm.25)"
           git push origin "$branch"
 
-      - name: Create Pull Request
-        if: env.changes == 'true'
+          echo "branch_name=$branch" >> $GITHUB_OUTPUT
+
+      # ----------------------------------------------------
+      # 6. Create PR (SSWG-compliant)
+      # ----------------------------------------------------
+      - name: Open Pull Request
+        if: steps.detect_changes.outputs.doc_changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Automated update: git_REST_API.md"
+          title: "SSWG-MVM AutoDoc Update: git_REST_API.md"
           body: |
-            This PR adds or updates the **git_REST_API.md** file.
-            Generated by: Recursive_Grimoire_ v1.13.0  
-            Triggered by: ${{ github.event_name }}
+            Automated documentation refresh generated under:
+
+            - **Engine:** SSWG–MVM v0.9.mvm.25  
+            - **Module:** Recursive AutoDoc Processor  
+            - **Event:** `${{ github.event_name }}`  
+            - **Bot:** SSWG-MVM AutoDoc
+
+            This PR updates:  
+            **git_REST_API.md**
+
+            All changes originate from  
+            `scripts/write_git_REST_API_md.py`
+
+          branch: ${{ steps.commit_updated_documentation.outputs.branch_name }}
           base: main
-          
+
+      # ----------------------------------------------------
+      # 7. Upload Artifacts (Optional but recommended)
+      # ----------------------------------------------------
+      - name: Upload Documentation Artifact
+        if: steps.detect_changes.outputs.doc_changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: git_REST_API_doc
+          path: git_REST_API.md
