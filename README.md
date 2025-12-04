@@ -1,203 +1,313 @@
-# Recursive_Grimoire_ v1.13.0
+README.md — SSWG–MVM v.09.mvm.25
 
-## AI Instructional Workflow Generator
+Synthetic Synthesist of Workflow Generation — Minimum Viable Model
 
-![Project Status: Experimental](https://img.shields.io/badge/status-experimental-orange) ![Python](https://img.shields.io/badge/language-Python-blue) ![Codename: Grimoire](https://img.shields.io/badge/codename-Grimoire-purple) ![License: Proprietary](https://img.shields.io/badge/license-Proprietary-lightgrey)
+<div id="top"></div>
+<div align="center">
+   <img src="raven.svg" width="180" alt="Raven Recordings Logo">
+</div><div align="center">
+<h2>SSWG–MVM</h2>
+<i>Synthetic Synthesist of Workflow Generation — v.09.mvm.25</i>
+</div>
+---
+
+<div align="center">     
+
+</div>
+---
+
+<div align="center">
+<a href="https://git.io/typing-svg">
+<img src="https://readme-typing-svg.demolab.com?font=Roboto+Slab&color=%237E3ACE&size=30&center=true&vCenter=true&width=650&lines=Synthetic+Synthesist+of+Workflow+Generation;Recursive+AI+Engine;Modular+Workflow+Generator;Designed+by+Tommy+Raven;Recursive.+Schema-Based.+Deterministic.">
+</a>
+</div>
+---
+
+🧠 Overview
+
+SSWG–MVM is a recursive, schema-aligned AI engine that generates, validates, evolves, and publishes instructional workflows.
+
+Instead of producing ephemeral responses, SSWG generates structured systems:
+
+Multi-phase workflows
+
+Dependency graphs
+
+Metadata-rich artifacts
+
+Deterministic lineage histories
+
+Recursive refinement cycles
+
+
+It is effectively a workflow compiler with:
+
+strict JSON-schema validation
+
+autonomous refinement
+
+structural autocorrect
+
+mermaid diagram export
+
+template-based workflow seeds
+
+CI/CD-driven versioning
+
+
+All under a unified engine designed and authored by:
+
+Tommy Raven (Thomas Byers)
+
+Raven Recordings, LLC © 2025
+
 
 ---
 
-## Table of Contents
+🧩 System Design Philosophy
 
-1. Overview
-2. Design Philosophy
-3. System Architecture
-4. Core Features
-5. How It Works
-6. Example Templates
-7. Operational Workflow
-8. Intended Users
-9. Technology Stack
-10. Setup & Usage
-11. Onboarding & Developer Guide
-12. Future Enhancements
-13. Contributing
-14. License
-15. Contact
+> “Teach the workflow how to teach itself.”
 
----
 
-# Overview
 
-**Recursive_Grimoire_ v1.13.0** is a **meta-educational AI system** that conjures, evaluates, and evolves **instructional workflows** automatically. It functions both as a *teacher* and a *scribe*, translating user intent into self-contained learning frameworks that recursively generate new instructions for humans or AI agents. Each workflow is a **grimoire of knowledge**, structured with packages for modules, tasks, dependencies, and logic sequences, capable of **recursive self-expansion**, meaning it can learn from its own output, and capable of teaching other AI systems as well.
+SSWG–MVM is built on four pillars:
 
-The updated SSWG is a modular system for generating, evaluating, and publishing structured workflows from high-level user goals. It includes:
+🪞 Recursion
 
-* Goal parsing and clarification
-* Workflow generation & evaluation
-* Constitution & safety enforcement
-* Contradiction detection & auto-remediation
-* Risk assessment
-* Deterministic execution & reproducibility
-* FastAPI-based web interface
-* Unit, integration, and acceptance testing
-* CI/CD workflows
+Every workflow is both an output and input for the next.
+
+🔐 Schema Integrity
+
+A workflow must pass strict schema validation before being accepted.
+
+🔨 Granular Modularity
+
+Atomic building blocks:
+phases → tasks → dependencies → evaluation → lineage.
+
+🔁 Deterministic Reproducibility
+
+Every workflow run is timestamped, versioned, and exportable across machines.
+
 
 ---
 
-# Design Philosophy
+🏛 System Architecture
 
-> "Each workflow teaches the next workflow how to teach."
+sswg-mvm/
+├── generator/              → Main pipeline (IO, refinement, exporting)
+├── ai_validation/          → JSON schema + structural validation
+├── ai_graph/               → Dependency graph + DAG correction
+├── ai_recursive/           → Recursion manager + refinement engine
+├── ai_memory/              → History, lineage, anomaly detection
+├── ai_visualization/       → Mermaid + Graphviz exporters
+├── ai_monitoring/          → Structured event logging
+├── data/templates/         → Seed templates (creative, meta, curriculum, etc)
+└── schemas/                → Canonical workflow schema
 
-The design philosophy emphasizes the iterative nature of the system. Each generated workflow is not just a static product but a stepping stone for the next, continuously refining the teaching process. This is achieved through the system's ability to learn from its own outputs, adapt to new information, and evolve its instructional strategies.
-
-Ancient grimoire inspiration adds depth, suggesting that the system incorporates knowledge preservation, symbolic representation, and recursive meta-learning. The end result is workflows that are both effective and adaptable, capable of generating new knowledge and improving pedagogical approaches over time.
-
----
-
-# System Architecture
-
-The system is organized in **layers** with clear separation of concerns:
-
-**Core** – Configuration, logging, exceptions
-**Parsing** – Extract intents from user goals; generate clarifications; validate schemas
-**Constitution Engine** – Apply rules and predicates to approve or reject workflows
-**Contradiction Detector** – Identify inconsistencies; auto-remediate when possible
-**Safety Stack** – Sanitize inputs/outputs; assess safety; sandbox simulation
-**Agents** – GeneratorAgent, EvaluatorAgent, EvolutionEngine, Archivist
-**Risk Pipeline** – Weighted scoring of workflow steps
-**Reproducibility** – DeterministicRunner, Reconstruct API, model metadata tracking
-**Web Layer** – FastAPI routes for workflows, runs, inventory
-**Testing & CI** – Unit, integration, acceptance tests; GitHub Actions workflow
-
-**Root-Level Files** include configuration, dependency management, legal, and documentation for contributors. Supporting folders handle templates, generated workflows, modules, schemas, meta-knowledge, data storage, visualization, monitoring, and optional containerization.
 
 ---
 
-# Core Features
+⭐ Core Features
 
-* Recursive Workflow Generation — Every output can seed future workflows
-* Bimodal Representation — Markdown for humans; minified JSON for machines
-* Dependency Graph DAG — Visualizes module interconnections; avoids conflicts
-* Schema-Driven Validation — Maintains logical consistency across all phases
-* Persistent Memory System — Archives outputs with full version history
-* Self-Evaluative Feedback Loop — Measures clarity, coverage, AI translatability
-* Visual Export — Graphviz diagrams for human inspection
-* Structured Logging — Tracks all generation events
-* Optional Arcane-Themed Modules (~30% of workflow modules)
+✔ Template-based generation
 
----
+Creative, technical, educational, metacognitive workflows.
 
-# How It Works
+✔ Recursive refinement engine
 
-1. Invocation — User specifies workflow purpose, audience, and style
-2. Phase Generation — Constructs a six-phase workflow:
+Performs multi-pass improvement cycles.
 
-   * Phase 1: Initialization & Variable Acquisition
-   * Phase 1.5: Objective Refinement (abstract → measurable goals)
-   * Phase 2: Human-Readable How-To Generation
-   * Phase 3: Modular Expansion & Reusability
-   * Phase 4: Evaluation & Quality Assurance
-   * Phase 5: Regeneration & Evolution
-3. Validation — Schema verification ensures completeness, dependency integrity, and uniqueness
-4. Evaluation — Metrics measure clarity, coverage, expansion potential, and AI translatability
-5. Reflection & Regeneration — Versioning, minified JSON export, recursive self-improvement
+✔ Schema validation
 
----
+Ensures structure, uniqueness, and logical consistency.
 
-# Example Templates
+✔ Dependency graph construction
 
-| Template                          | Focus         | Primary Use                              |
-| --------------------------------- | ------------- | ---------------------------------------- |
-| training_curriculum_template.json | Education     | Build structured learning programs       |
-| technical_procedure_template.json | Engineering   | Standardize technical workflows          |
-| creative_writing_template.json    | Arts          | Generate literary or narrative workflows |
-| meta_reflection_template.json     | Metacognition | Evaluate and evolve cognitive frameworks |
+Auto-corrects missing or circular dependencies.
+
+✔ JSON + Markdown export
+
+Machine + human-friendly output.
+
+✔ Mermaid diagram support
+
+Instant visual graph generation.
+
+✔ History + lineage tracking
+
+Complete generational ancestry.
+
+✔ CI/CD auto-versioning
+
+Version automatically bumps on module changes.
+
 
 ---
 
-# Operational Workflow
+🌀 Operational Pipeline
 
-The system supports **recursive execution** and **feedback loops** across all workflow phases, allowing continuous self-improvement and modular expansion.
+1. Input: purpose, audience, style, or template slug
+
+
+2. Load template from /data/templates/
+
+
+3. Validate workflow against schema
+
+
+4. Build DAG and correct structure
+
+
+5. Run recursive refinement
+
+
+6. Export:
+
+JSON
+
+Markdown
+
+Mermaid graph
+
+
+
+7. Record history
+
+
+8. Trigger CI/CD version bump if core modules changed
+
+
+
 
 ---
 
-# Intended Users
+📄 Templates Included
 
-* AI Developers — Explore recursive instructional AI
-* Educators & Trainers — Auto-generate curriculum structures
-* Writers & Designers — Create recursive creative frameworks
-* Research Institutions — Investigate AI-guided pedagogy and meta-learning
+Template	Domain	Purpose
 
----
+creative_writing_template.json	Literary Arts	Narrative/poetic structures
+technical_procedure_template.json	Engineering	SOP-style reproducible procedures
+meta_reflection_template.json	Metacognition	Self-evaluating cognitive frameworks
+training_curriculum_template.json	Education	Structured lesson/curriculum design
 
-# Technology Stack
 
-* Python 3.10+
-* JSON + Markdown hybrid architecture
-* Graphviz (optional) for visualization
-* pytest for validation testing
-* Custom AI reasoning modules (planned)
+All templates are fully schema-aligned and SSWG–MVM enhanced.
+
 
 ---
 
-# Setup & Usage
+🛠 Setup & Usage
 
-Clone Repository:
-git clone [https://github.com/Tommy-Raven/AI_instructions_workflow.git](https://github.com/Tommy-Raven/AI_instructions_workflow.git)
+Clone repo:
+
+git clone https://github.com/Tommy-Raven/AI_instructions_workflow.git
 cd AI_instructions_workflow
 
-Install Dependencies:
+Install dependencies:
+
 pip install -r requirements.txt
 
-Run CLI:
-python cli.py --purpose "Design an AI ethics curriculum"
+Run the generator:
 
-View Results:
+python3 -m generator.main --template creative --preview
 
-* Generated JSON: `data/workflows/`
-* Logs: `logs/workflow.log`
-* Optional Graph: `build/workflow_graph.dot`
+Outputs will appear in:
 
----
+data/outputs/
 
-# Onboarding & Developer Guide
-
-* **Folder Structure** — Understand modular layers: ai_core, ai_recursive, ai_memory, ai_evaluation
-* **Templates & Schemas** — Use `data/templates/` and `schemas/` for validation
-* **Agents & Engines** — GeneratorAgent, EvaluatorAgent, EvolutionEngine, Archivist
-* **Testing** — Use pytest to run unit, integration, and acceptance tests
-* **CI/CD** — GitHub Actions workflow preconfigured for build, test, and deployment
-* **Contribution Flow** — Submit pull requests; follow coding standards in CONTRIBUTOR_GUIDE.md
 
 ---
 
-# Future Enhancements
+🧪 Testing
 
-* Adaptive semantic embeddings for self-learning
-* Domain-specific plugin grimoires
-* Multi-agent recursive co-generation
-* Interactive dashboard visualization
-* Open LLM integration for semantic workflow synthesis
-* Automatic derivative workflow generation with lineage tracking
+Run full suite:
+
+pytest -v
+
+Testing covers:
+
+CLI
+
+Validation
+
+Exporting
+
+Recursion
+
+Dependency graph integrity
+
+Version diffing
+
+End-to-end workflow cycle
+
+
 
 ---
 
-# Contributing
+🔄 CI/CD Automation
 
-See CONTRIBUTOR_GUIDE.md for details. Submit issues or pull requests via GitHub.
+GitHub Actions Included:
+
+📌 Auto-Version Bump (Core Module Detection)
+
+When generator or AI core code changes →
+v.09.mvm.25 → v.09.mvm.26
+
+📌 Auto-generated REST API docs
+
+Script regenerates API markdown and opens PR.
+
+📌 Test Pipeline
+
+Runs Pytest on commits + PRs.
+
+📌 GitHub Pages (optional)
+
+If you enable it, MkDocs can publish:
+
+API docs
+
+Module overviews
+
+Architectural diagrams
 
 ---
 
-# License
+👤 Author & Contact
 
-Proprietary — Research Phase
-All rights reserved © 2025 Tommy Raven / Raven Recordings
+Tommy Raven (Thomas Byers)
+
+AI Researcher • Workflow Engineer • Python Developer
+Founder — Raven Recordings, LLC © 2025
+
+GitHub: @Tommy-Raven
+
+Pronouns: Apache / Helicopter 🚁😭
+
+Fun fact: Not actually an Apache helicopter
+
+I ended up on GitHub and now can't escape
+
+
 
 ---
 
-# Contact
+📜 License
 
-* Author: Tommy Raven
-* Email: GitHub Issues preferred
-* Codename: Recursive_Grimoire_ v1.13.0
-* Repository: github.com/Tommy-Raven/AI_instructions_workflow
+Raven Recordings, LLC © 2025
+All rights reserved.
+Proprietary, Non-commercial research use permitted.
+Commercial use requires explicit written permission.
+
+
+---
+
+<div align="center">
+<a href="#top">
+<img src="https://img.shields.io/static/v1?label&message=back+to+top&color=7E3ACE&style=flat-square" />
+</a>
+</div><div align="center">
+<img src="https://github.com/Tommy-Raven/AI_instructions_workflow/assets/footer.png" width="100%">
+</div>
+---
