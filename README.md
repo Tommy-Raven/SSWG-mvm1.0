@@ -1,19 +1,29 @@
-README.md — SSWG–MVM v.09.mvm.25
-
-Synthetic Synthesist of Workflow Generation — Minimum Viable Model
+# **SSWG–MVM v.09.mvm.25**  
+### *Synthetic Synthesist of Workflow Generation — Minimum Viable Model*
 
 <div id="top"></div>
 <div align="center">
    <img src="raven.svg" width="180" alt="Raven Recordings Logo">
-</div><div align="center">
+</div>
+
+<div align="center">
 <h2>SSWG–MVM</h2>
 <i>Synthetic Synthesist of Workflow Generation — v.09.mvm.25</i>
 </div>
+
 ---
 
-<div align="center">     
+<div align="center">
+
+![Status](https://img.shields.io/badge/status-active-7E3ACE?style=for-the-badge)
+![Python](https://img.shields.io/badge/python-3.10+-blue?style=for-the-badge&logo=python)
+![Architecture](https://img.shields.io/badge/architecture-recursive_AI-black?style=for-the-badge)
+![License](https://img.shields.io/badge/license-Raven_Recordings_LLC_©2025-8A8A8A?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-v.09.mvm.25-7E3ACE?style=for-the-badge)
+![Codename](https://img.shields.io/badge/codename-SSWG_MVM-purple?style=for-the-badge)
 
 </div>
+
 ---
 
 <div align="center">
@@ -21,285 +31,175 @@ Synthetic Synthesist of Workflow Generation — Minimum Viable Model
 <img src="https://readme-typing-svg.demolab.com?font=Roboto+Slab&color=%237E3ACE&size=30&center=true&vCenter=true&width=650&lines=Synthetic+Synthesist+of+Workflow+Generation;Recursive+AI+Engine;Modular+Workflow+Generator;Designed+by+Tommy+Raven;Recursive.+Schema-Based.+Deterministic.">
 </a>
 </div>
----
-
-🧠 Overview
-
-SSWG–MVM is a recursive, schema-aligned AI engine that generates, validates, evolves, and publishes instructional workflows.
-
-Instead of producing ephemeral responses, SSWG generates structured systems:
-
-Multi-phase workflows
-
-Dependency graphs
-
-Metadata-rich artifacts
-
-Deterministic lineage histories
-
-Recursive refinement cycles
-
-
-It is effectively a workflow compiler with:
-
-strict JSON-schema validation
-
-autonomous refinement
-
-structural autocorrect
-
-mermaid diagram export
-
-template-based workflow seeds
-
-CI/CD-driven versioning
-
-
-All under a unified engine designed and authored by:
-
-Tommy Raven (Thomas Byers)
-
-Raven Recordings, LLC © 2025
-
 
 ---
 
-🧩 System Design Philosophy
+# 🧠 Overview
 
-> “Teach the workflow how to teach itself.”
+**SSWG–MVM** is a **recursive, schema-aligned AI engine** that generates, validates, evolves, and publishes **instructional workflows**.
 
+Instead of producing ephemeral responses, SSWG generates *structured systems*:
 
+- Multi-phase workflows  
+- Dependency graphs  
+- Metadata-rich artifacts  
+- Deterministic lineage histories  
+- Recursive refinement cycles  
 
-SSWG–MVM is built on four pillars:
-
-🪞 Recursion
-
-Every workflow is both an output and input for the next.
-
-🔐 Schema Integrity
-
-A workflow must pass strict schema validation before being accepted.
-
-🔨 Granular Modularity
-
-Atomic building blocks:
-phases → tasks → dependencies → evaluation → lineage.
-
-🔁 Deterministic Reproducibility
-
-Every workflow run is timestamped, versioned, and exportable across machines.
-
+Author: **Tommy Raven (Thomas Byers)**  
+Copyright: **Raven Recordings, LLC © 2025**
 
 ---
 
-🏛 System Architecture
+# 🧩 System Design Philosophy
 
+> *“Teach the workflow how to teach itself.”*
+
+SSWG–MVM relies on:
+
+### 🪞 Recursion  
+Each workflow seeds the next.
+
+### 🔐 Schema Integrity  
+Strict JSON validation for reproducibility.
+
+### 🔨 Modularity  
+Phases → tasks → dependencies → evaluation.
+
+### 🔁 Determinism  
+Reproducible output + versioned lineage.
+
+---
+
+# 🏛 System Architecture
+
+```
 sswg-mvm/
 ├── generator/              → Main pipeline (IO, refinement, exporting)
-├── ai_validation/          → JSON schema + structural validation
-├── ai_graph/               → Dependency graph + DAG correction
-├── ai_recursive/           → Recursion manager + refinement engine
-├── ai_memory/              → History, lineage, anomaly detection
+├── ai_validation/          → JSON schema validation
+├── ai_graph/               → Dependency graph + DAG autocorrection
+├── ai_recursive/           → Recursion engine
+├── ai_memory/              → History + lineage tracking
 ├── ai_visualization/       → Mermaid + Graphviz exporters
 ├── ai_monitoring/          → Structured event logging
-├── data/templates/         → Seed templates (creative, meta, curriculum, etc)
+├── data/templates/         → Seed templates
 └── schemas/                → Canonical workflow schema
-
-
----
-
-⭐ Core Features
-
-✔ Template-based generation
-
-Creative, technical, educational, metacognitive workflows.
-
-✔ Recursive refinement engine
-
-Performs multi-pass improvement cycles.
-
-✔ Schema validation
-
-Ensures structure, uniqueness, and logical consistency.
-
-✔ Dependency graph construction
-
-Auto-corrects missing or circular dependencies.
-
-✔ JSON + Markdown export
-
-Machine + human-friendly output.
-
-✔ Mermaid diagram support
-
-Instant visual graph generation.
-
-✔ History + lineage tracking
-
-Complete generational ancestry.
-
-✔ CI/CD auto-versioning
-
-Version automatically bumps on module changes.
-
+```
 
 ---
 
-🌀 Operational Pipeline
+# ⭐ Core Features
 
-1. Input: purpose, audience, style, or template slug
-
-
-2. Load template from /data/templates/
-
-
-3. Validate workflow against schema
-
-
-4. Build DAG and correct structure
-
-
-5. Run recursive refinement
-
-
-6. Export:
-
-JSON
-
-Markdown
-
-Mermaid graph
-
-
-
-7. Record history
-
-
-8. Trigger CI/CD version bump if core modules changed
-
-
-
+- Template-based generation  
+- Recursive refinement cycles  
+- Schema validation (strict/extended)  
+- Dependency graph construction  
+- JSON & Markdown exporters  
+- Mermaid diagram generation  
+- Lineage + history tracking  
+- CI/CD-based auto version bumping  
 
 ---
 
-📄 Templates Included
+# 🌀 Operational Pipeline
 
-Template	Domain	Purpose
-
-creative_writing_template.json	Literary Arts	Narrative/poetic structures
-technical_procedure_template.json	Engineering	SOP-style reproducible procedures
-meta_reflection_template.json	Metacognition	Self-evaluating cognitive frameworks
-training_curriculum_template.json	Education	Structured lesson/curriculum design
-
-
-All templates are fully schema-aligned and SSWG–MVM enhanced.
-
+1. Load template (creative, technical, educational, metacognitive)
+2. Validate schema
+3. Build dependency graph
+4. Run recursive refinement cycle
+5. Export artifacts  
+6. Record lineage  
+7. Auto-bump version if core modules updated  
 
 ---
 
-🛠 Setup & Usage
+# 📄 Templates Included
 
-Clone repo:
+| Template | Domain | Purpose |
+|---------|--------|---------|
+| creative_writing_template.json | Literary Arts | Narrative/poetic structures |
+| technical_procedure_template.json | Engineering | SOP-style reproducible procedures |
+| meta_reflection_template.json | Metacognition | Self-evaluating cognitive frameworks |
+| training_curriculum_template.json | Education | Curriculum generation |
 
+---
+
+# 🛠 Setup & Usage
+
+### Clone:
+```bash
 git clone https://github.com/Tommy-Raven/AI_instructions_workflow.git
 cd AI_instructions_workflow
+```
 
-Install dependencies:
-
+### Dependencies:
+```bash
 pip install -r requirements.txt
+```
 
-Run the generator:
-
+### Run Generator:
+```bash
 python3 -m generator.main --template creative --preview
+```
 
-Outputs will appear in:
+Artifacts output to:
 
+```
 data/outputs/
-
+```
 
 ---
 
-🧪 Testing
+# 🧪 Testing
 
-Run full suite:
-
+```bash
 pytest -v
+```
 
-Testing covers:
+Tests cover:
 
-CLI
-
-Validation
-
-Exporting
-
-Recursion
-
-Dependency graph integrity
-
-Version diffing
-
-End-to-end workflow cycle
-
-
+- CLI  
+- Validation layers  
+- Exporters  
+- Graph engine  
+- Recursive engine  
+- Version diffing  
+- End-to-end workflow lifecycle  
 
 ---
 
-🔄 CI/CD Automation
+# 🔄 CI/CD Automation
 
-GitHub Actions Included:
+Current actions:
 
-📌 Auto-Version Bump (Core Module Detection)
+### ✔ Auto-Version Bump (core module detection)  
+### ✔ Auto-Generated Docs  
+### ✔ Test workflow  
+### ✔ Auto-PR creation  
 
-When generator or AI core code changes →
-v.09.mvm.25 → v.09.mvm.26
+Upcoming:
 
-📌 Auto-generated REST API docs
-
-Script regenerates API markdown and opens PR.
-
-📌 Test Pipeline
-
-Runs Pytest on commits + PRs.
-
-📌 GitHub Pages (optional)
-
-If you enable it, MkDocs can publish:
-
-API docs
-
-Module overviews
-
-Architectural diagrams
+### 🚧 MkDocs site (auto-published to GitHub Pages)
 
 ---
 
-👤 Author & Contact
+# 👤 Author & Contact
 
-Tommy Raven (Thomas Byers)
+**Tommy Raven**  
+AI Researcher • Workflow Engineer • Python Developer  
+Raven Recordings, LLC © 2025  
 
-AI Researcher • Workflow Engineer • Python Developer
-Founder — Raven Recordings, LLC © 2025
-
-GitHub: @Tommy-Raven
-
-Pronouns: Apache / Helicopter 🚁😭
-
-Fun fact: Not actually an Apache helicopter
-
-I ended up on GitHub and now can't escape
-
-
+GitHub: **[@Tommy-Raven](https://github.com/Tommy-Raven)**  
+Pronouns: *Apache / Helicopter* 🚁😭  
+Fun fact: *Not actually an Apache helicopter.*  
+Confused but thriving on GitHub.  
 
 ---
 
-📜 License
+# 📜 License
 
-Raven Recordings, LLC © 2025
-All rights reserved.
-Proprietary, Non-commercial research use permitted.
-Commercial use requires explicit written permission.
-
+**Raven Recordings, LLC © 2025**  
+All rights reserved.  
 
 ---
 
@@ -307,7 +207,8 @@ Commercial use requires explicit written permission.
 <a href="#top">
 <img src="https://img.shields.io/static/v1?label&message=back+to+top&color=7E3ACE&style=flat-square" />
 </a>
-</div><div align="center">
-<img src="https://github.com/Tommy-Raven/AI_instructions_workflow/assets/footer.png" width="100%">
 </div>
----
+
+<div align="center">
+<img src="assets/footer.png" width="100%">
+</div>
