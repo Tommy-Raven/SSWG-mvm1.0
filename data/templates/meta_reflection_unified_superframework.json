@@ -1,0 +1,289 @@
+{
+  "workflow_id": "meta_reflection_unified_superframework",
+  "version": "0.3.0mvm",
+  "metadata": {
+    "category": "Unified Meta-Learning / Recursive Reflection",
+    "author": "Tommy Raven, Raven Recordings, LLC",
+    "profile": "sswg_mvm_reflection_superframework",
+    "supports_multidomain": true,
+    "introspection_depth": "very_high",
+    "recursion_depth_recommended": 3,
+    "ideal_for": [
+      "LLM meta-refinement",
+      "educator curriculum analysis",
+      "engineering diagnostic workflows",
+      "adaptive learning systems",
+      "contradiction/drift detection engines"
+    ]
+  },
+  "phases": [
+    {
+      "id": "P1",
+      "title": "Context Initialization & Data Ingestion",
+      "tasks": [
+        {
+          "task_id": "P1_T1",
+          "action": "collect_artifacts",
+          "inputs": ["system_outputs", "learner_artifacts", "feedback_logs"],
+          "outputs": ["raw_context_bundle"]
+        },
+        {
+          "task_id": "P1_T2",
+          "action": "define_context",
+          "inputs": ["raw_context_bundle"],
+          "outputs": ["reflection_context"]
+        },
+        {
+          "task_id": "P1_T3",
+          "action": "attach_metadata",
+          "inputs": ["reflection_context"],
+          "outputs": ["context_with_metadata"]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Pattern Recognition, Trace Analysis & Artifact Classification",
+      "tasks": [
+        {
+          "task_id": "P2_T1",
+          "action": "detect_patterns",
+          "inputs": ["context_with_metadata"],
+          "outputs": ["pattern_map"]
+        },
+        {
+          "task_id": "P2_T2",
+          "action": "analyze_cognitive_traces",
+          "inputs": ["pattern_map"],
+          "outputs": ["trace_diagnostics"]
+        },
+        {
+          "task_id": "P2_T3",
+          "action": "classify_artifacts",
+          "inputs": ["trace_diagnostics"],
+          "outputs": ["competency_clusters"]
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "Epistemic Grounding & Heuristic Surface Mapping",
+      "tasks": [
+        {
+          "task_id": "P3_T1",
+          "action": "surface_knowns_unknowns",
+          "inputs": ["competency_clusters"],
+          "outputs": ["epistemic_profile"]
+        },
+        {
+          "task_id": "P3_T2",
+          "action": "extract_heuristics",
+          "inputs": ["epistemic_profile"],
+          "outputs": ["heuristic_map"]
+        },
+        {
+          "task_id": "P3_T3",
+          "action": "map_uncertainty_distribution",
+          "inputs": ["heuristic_map"],
+          "outputs": ["uncertainty_matrix"]
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "title": "Contradiction Mapping, Tension Surfacing & Misalignment Detection",
+      "tasks": [
+        {
+          "task_id": "P4_T1",
+          "action": "identify_contradictions",
+          "inputs": ["uncertainty_matrix"],
+          "outputs": ["contradiction_profile"]
+        },
+        {
+          "task_id": "P4_T2",
+          "action": "map_tensions",
+          "inputs": ["contradiction_profile"],
+          "outputs": ["tension_matrix"]
+        },
+        {
+          "task_id": "P4_T3",
+          "action": "detect_misalignments",
+          "inputs": ["tension_matrix"],
+          "outputs": ["misalignment_report"]
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "Instructional Alignment & Curriculum Reconstruction",
+      "tasks": [
+        {
+          "task_id": "P5_T1",
+          "action": "reconcile_behaviors",
+          "inputs": ["misalignment_report"],
+          "outputs": ["reconciliation_map"]
+        },
+        {
+          "task_id": "P5_T2",
+          "action": "identify_curriculum_gaps",
+          "inputs": ["reconciliation_map"],
+          "outputs": ["gap_analysis"]
+        },
+        {
+          "task_id": "P5_T3",
+          "action": "rebuild_curriculum_sequences",
+          "inputs": ["gap_analysis"],
+          "outputs": ["curriculum_model"]
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "title": "Ego-less Reconstruction, Frame Rebuilding & Conceptual Synthesis",
+      "tasks": [
+        {
+          "task_id": "P6_T1",
+          "action": "deconstruct_flawed_structures",
+          "inputs": ["curriculum_model"],
+          "outputs": ["deconstructed_map"]
+        },
+        {
+          "task_id": "P6_T2",
+          "action": "merge_concepts",
+          "inputs": ["deconstructed_map"],
+          "outputs": ["merged_abstractions"]
+        },
+        {
+          "task_id": "P6_T3",
+          "action": "simplify_hierarchies",
+          "inputs": ["merged_abstractions"],
+          "outputs": ["optimized_structure"]
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "title": "Iterative Regeneration & Recursive Synthesis",
+      "tasks": [
+        {
+          "task_id": "P7_T1",
+          "action": "regenerate_models",
+          "inputs": ["optimized_structure"],
+          "outputs": ["regenerated_framework"]
+        },
+        {
+          "task_id": "P7_T2",
+          "action": "apply_metacognitive_strategies",
+          "inputs": ["regenerated_framework"],
+          "outputs": ["stabilized_framework"]
+        },
+        {
+          "task_id": "P7_T3",
+          "action": "conditional_recursion",
+          "inputs": ["stabilized_framework"],
+          "outputs": ["recursively_refined_framework"]
+        }
+      ]
+    },
+    {
+      "id": "P8",
+      "title": "Simulation, Stress Testing & Reality Alignment",
+      "tasks": [
+        {
+          "task_id": "P8_T1",
+          "action": "perform_edge_case_simulations",
+          "inputs": ["recursively_refined_framework"],
+          "outputs": ["simulation_results"]
+        },
+        {
+          "task_id": "P8_T2",
+          "action": "adversarial_testing",
+          "inputs": ["simulation_results"],
+          "outputs": ["robustness_report"]
+        },
+        {
+          "task_id": "P8_T3",
+          "action": "evaluate_transferability",
+          "inputs": ["robustness_report"],
+          "outputs": ["transferability_profile"]
+        }
+      ]
+    },
+    {
+      "id": "P9",
+      "title": "Evaluation, Rubric Scoring & Quality Assurance Validation",
+      "tasks": [
+        {
+          "task_id": "P9_T1",
+          "action": "score_outputs",
+          "inputs": ["transferability_profile"],
+          "outputs": ["scoring_matrix"]
+        },
+        {
+          "task_id": "P9_T2",
+          "action": "run_regression_tests",
+          "inputs": ["scoring_matrix"],
+          "outputs": ["regression_summary"]
+        },
+        {
+          "task_id": "P9_T3",
+          "action": "quality_assurance",
+          "inputs": ["regression_summary"],
+          "outputs": ["qa_report"]
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "title": "Version Control, Archival & Longitudinal Trajectory Mapping",
+      "tasks": [
+        {
+          "task_id": "P10_T1",
+          "action": "archive_versions",
+          "inputs": ["qa_report"],
+          "outputs": ["archival_record"]
+        },
+        {
+          "task_id": "P10_T2",
+          "action": "log_issues",
+          "inputs": ["archival_record"],
+          "outputs": ["long_term_issue_log"]
+        },
+        {
+          "task_id": "P10_T3",
+          "action": "map_growth_trajectory",
+          "inputs": ["long_term_issue_log"],
+          "outputs": ["trajectory_map"]
+        }
+      ]
+    }
+  ],
+  "modules": [
+    { "name": "observation", "depends_on": [] },
+    { "name": "pattern_analysis", "depends_on": ["observation"] },
+    { "name": "epistemic_modeling", "depends_on": ["pattern_analysis"] },
+    { "name": "contradiction_mapping", "depends_on": ["epistemic_modeling"] },
+    { "name": "curriculum_engine", "depends_on": ["contradiction_mapping"] },
+    { "name": "reconstruction", "depends_on": ["curriculum_engine"] },
+    { "name": "recursive_synthesis", "depends_on": ["reconstruction"] },
+    { "name": "stress_testing", "depends_on": ["recursive_synthesis"] },
+    { "name": "evaluation", "depends_on": ["stress_testing"] },
+    { "name": "versioning", "depends_on": ["evaluation"] }
+  ],
+  "recursion": {
+    "allow_recursive_refinement": true,
+    "depth_limit": 3,
+    "preferred_modes": ["synthesis", "diff_driven", "heuristic"],
+    "trigger_conditions": [
+      "score_drop_detected",
+      "major_contradiction_surfaced",
+      "uncertainty_regression_detected"
+    ]
+  },
+  "evaluation": {
+    "composite_score": null,
+    "clarity_score": null,
+    "rubric": {},
+    "notes": []
+  }
+        }
