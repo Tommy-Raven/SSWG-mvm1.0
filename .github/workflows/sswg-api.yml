@@ -1,0 +1,93 @@
+name: SSWG–MVM API CI
+
+# ───────────────────────────────────────────────
+# EVENT TRIGGERS
+# ───────────────────────────────────────────────
+on:
+  push:
+    branches: ["main", "dev"]
+    paths:
+      - "API/**"
+      - "generator/**"
+      - "ai_core/**"
+      - "ai_validation/**"
+      - "ai_recursive/**"
+      - "ai_graph/**"
+      - "ai_memory/**"
+      - "ai_monitoring/**"
+      - "ai_visualization/**"
+      - ".github/workflows/sswg-api.yml"
+  pull_request:
+    branches: ["main", "dev"]
+    paths:
+      - "API/**"
+      - "generator/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+# ───────────────────────────────────────────────
+# JOB 1 — BUILD API
+# ───────────────────────────────────────────────
+jobs:
+  build_api:
+    name: 🧩 Build API (FastAPI)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          # Primary dependency path
+          if [ -f reproducibility/requirements.txt ]; then
+            pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; then
+            pip install -r REQUIREMENTS.txt
+          fi
+          pip install fastapi uvicorn flake8 pytest httpx
+
+      - name: 🔍 Lint API + Core
+        run: |
+          echo "Running flake8..."
+          flake8 API generator ai_core --max-line-length=120 --statistics
+
+  # ───────────────────────────────────────────────
+  # JOB 2 — API TEST SUITE
+  # ───────────────────────────────────────────────
+  test_api:
+    name: 🧪 API Tests (FastAPI)
+    needs: build_api
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; then
+            pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; then
+            pip install -r REQUIREMENTS.txt
+          fi
+          pip install fastapi uvicorn pytest httpx
+
+      - name: 🧪 Run API test suite
+        run: |
+          pytest -q API/tests --disable-warnings --maxfail=1
