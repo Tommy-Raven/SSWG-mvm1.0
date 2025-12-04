@@ -1,8 +1,8 @@
 {
   "template_id": "training_curriculum",
   "title": "AI Training Curriculum Blueprint",
-  "description": "Defines a structure for creating educational or 
-  training workflows.","phases": [
+  "description": "Defines a structure for creating educational or training workflows.",
+  "phases": [
     {
       "id": "P1",
       "title": "Learning Objectives Definition",
@@ -11,7 +11,7 @@
         "Clarify audience skill level",
         "Define measurable outcomes"
       ]
-    }
+    },
     {
       "id": "P2",
       "title": "Content Sequencing",
@@ -20,7 +20,7 @@
         "Define dependency relationships",
         "Draft session outlines"
       ]
-    }
+    },
     {
       "id": "P3",
       "title": "Assessment and Feedback Design",
