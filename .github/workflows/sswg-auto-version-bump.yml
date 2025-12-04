@@ -1,4 +1,4 @@
-name: SSWG–MVM Auto Version Bump
+name: SSWG–MVM Auto Version Bump (v0.9.mvm.25)
 
 # ───────────────────────────────────────────────
 # TRIGGERS
@@ -15,7 +15,6 @@ on:
       - "ai_monitoring/**"
       - "ai_memory/**"
       - "ai_visualization/**"
-
   workflow_dispatch:
 
 permissions:
@@ -33,15 +32,15 @@ jobs:
     steps:
 
       # ----------------------------------------------------
-      # 1. Checkout repository
+      # 1) Checkout repository
       # ----------------------------------------------------
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # required for diff + tagging
+          fetch-depth: 0
 
       # ----------------------------------------------------
-      # 2. Get list of changed files
+      # 2) Detect changed files
       # ----------------------------------------------------
       - name: Get changed files
         id: diff
@@ -51,7 +50,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       # ----------------------------------------------------
-      # 3. Determine if changes touch CORE modules
+      # 3) Determine if changes touch CORE modules
       # ----------------------------------------------------
       - name: Detect core module changes
         id: detect_core
@@ -68,52 +67,53 @@ jobs:
           done <<< "${{ steps.diff.outputs.changed_files }}"
 
       # ----------------------------------------------------
-      # 4. Stop workflow if no core change
+      # 4) Exit if nothing relevant changed
       # ----------------------------------------------------
       - name: Stop (no version bump needed)
         if: steps.detect_core.outputs.core_changed == 'false'
         run: echo "No core module changes detected — skipping version bump."
 
       # ----------------------------------------------------
-      # 5. Bump version (MVM-style)
+      # 5) Bump semantic version (v.XX.mvm.YY)
       # ----------------------------------------------------
-      - name: Bump version (v.XX.mvm.YYYY)
+      - name: Bump version
         if: steps.detect_core.outputs.core_changed == 'true'
         id: bump
         run: |
-          echo "Starting auto-version bump..."
           version_file="pyproject.toml"
 
-          # Extract current version
-          current=$(grep -E '^version *= *"' $version_file | sed -E 's/version *= *"([^"]+)"/\1/')
+          echo "Extracting current version..."
+          current=$(grep -E '^version *= *"' "$version_file" | sed -E 's/.*"([^"]+)".*/\1/')
+
           echo "Current version: $current"
 
-          # Parse version (format: v.09.mvm.25)
-          major=$(echo $current | cut -d'.' -f1 | sed 's/v//')
-          minor=$(echo $current | cut -d'.' -f2)
-          patch=$(echo $current | cut -d'.' -f4)
+          major=$(echo "$current" | cut -d'.' -f1 | sed 's/v//')
+          minor=$(echo "$current" | cut -d'.' -f2)
+          patch=$(echo "$current" | cut -d'.' -f4)
 
-          # Increment patch version
           new_patch=$((patch + 1))
-
           new_version="v.${major}.${minor}.mvm.${new_patch}"
-          echo "Bumping to: $new_version"
 
-          # Rewrite in pyproject.toml
-          sed -i "s/version = \".*\"/version = \"${new_version}\"/" $version_file
+          echo "Bumping to new version: $new_version"
 
+          sed -i "s/version = \".*\"/version = \"${new_version}\"/" "$version_file"
           echo "new_version=${new_version}" >> $GITHUB_OUTPUT
 
       # ----------------------------------------------------
-      # 6. Append CHANGELOG entry
+      # 6) Update CHANGELOG.md
       # ----------------------------------------------------
       - name: Update CHANGELOG
         if: steps.detect_core.outputs.core_changed == 'true'
         run: |
-          echo "Updating CHANGELOG.md"
+          echo "Updating CHANGELOG.md..."
+
           ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          bump="${{ steps.bump.outputs.new_version }}"
+
+          touch CHANGELOG.md
+
           {
-            echo "## ${ { steps.bump.outputs.new_version } } — ${ts}"
+            echo "## ${bump} — ${ts}"
             echo ""
             echo "**Changed core modules:**"
             echo "${{ steps.diff.outputs.changed_files }}"
@@ -121,9 +121,10 @@ jobs:
           } >> CHANGELOG.md
 
       # ----------------------------------------------------
-      # 7. Commit bump + changelog
+      # 7) Commit changes
       # ----------------------------------------------------
       - name: Commit changes
+        id: commit_changes
         if: steps.detect_core.outputs.core_changed == 'true'
         run: |
           git config --global user.name "SSWG-MVM AutoBump Bot"
@@ -136,10 +137,10 @@ jobs:
           git commit -m "Auto version bump to ${{ steps.bump.outputs.new_version }} (core module changes detected)"
           git push origin "$branch"
 
-          echo "branch_name=$branch" >> $GITHUB_OUTPUT
+          echo "branch_name=${branch}" >> $GITHUB_OUTPUT
 
       # ----------------------------------------------------
-      # 8. Create Pull Request
+      # 8) Create Pull Request
       # ----------------------------------------------------
       - name: Create Pull Request
         if: steps.detect_core.outputs.core_changed == 'true'
@@ -161,13 +162,18 @@ jobs:
             ### Generated by
             **SSWG–MVM AutoBump Engine v0.9.mvm.25**
 
-            Admin approval required before merging.
+            Admin approval is required before merge.
           base: main
           branch: ${{ steps.commit_changes.outputs.branch_name }}
 
       # ----------------------------------------------------
-      # 9. (Optional) Create Git Tag
+      # 9) Optional Git Tag Creation
       # ----------------------------------------------------
+      - name: Create Git Tag
+        if: steps.detect_core.outputs.core_changed == 'true'
+        run: |
+          git tag "${{ steps.bump.outputs.new_version }}"
+          git push origin "${{ steps.bump.outputs.new_version }}"      # ----------------------------------------------------
       - name: Create Git Tag
         if: steps.detect_core.outputs.core_changed == 'true'
         run: |
