@@ -1,0 +1,13 @@
+name: Enforce PR-only Policy
+
+on: push
+
+jobs:
+  block-direct-push:
+    if: github.actor != 'Tommy-Raven'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject direct push
+        run: |
+          echo "Direct pushes to protected branches are not allowed."
+          exit 1
