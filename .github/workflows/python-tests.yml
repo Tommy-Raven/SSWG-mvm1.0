@@ -1,0 +1,70 @@
+# =====================================================================
+# SSWG–MVM Python Tests Workflow
+# File: .github/workflows/python-tests.yml
+#
+# Purpose:
+#   - Run the full pytest suite for SSWG–MVM.
+#   - Ensure all modules (API, generator, ai_core, etc.) pass.
+#
+# Author: Tommy Raven / Raven Recordings, LLC ©2025
+# Version: v0.9.mvm.25
+# =====================================================================
+
+name: 🧪 SSWG–MVM Python Tests
+
+on:
+  push:
+    branches: [ "main", "dev", "canonical" ]
+    paths:
+      - "tests/**"
+      - "generator/**"
+      - "ai_*/*"
+      - "API/**"
+      - ".github/workflows/python-tests.yml"
+  pull_request:
+    branches: [ "main", "canonical" ]
+    paths:
+      - "tests/**"
+      - "generator/**"
+      - "ai_*/*"
+      - "API/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: 🧪 Run PyTest Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout repository
+      - uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          if [ -f pyproject.toml ]; then
+            pip install -e .[dev]
+          elif [ -f REQUIREMENTS.txt ]; then
+            pip install -r REQUIREMENTS.txt
+          fi
+          pip install pytest
+
+      - name: 🧪 Execute tests
+        run: |
+          pytest -q tests --disable-warnings --maxfail=1 --tb=short
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-test-results
+          path: tests/
