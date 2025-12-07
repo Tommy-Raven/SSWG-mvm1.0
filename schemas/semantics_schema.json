@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/semantics_schema.json",
   "title": "Semantic Schema",
   "description": "Defines linguistic and logical semantic mappings between workflow elements.",
   "type": "object",
@@ -28,6 +27,9 @@
       "type": "number",
       "minimum": 0,
       "maximum": 1
+    },
+     "metadata": {
+      "$ref": "semantics_schema.json"
     }
   },
   "additionalProperties": true

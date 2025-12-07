@@ -23,39 +23,71 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+from ai_graph.dependency_mapper import DependencyGraph
+from ai_validation.schema_validator import validate_workflow
+from ai_visualization.mermaid_generator import mermaid_from_workflow
 from data.data_parsing import load_template
+from generator.exporters import export_json, export_markdown
+from generator.history import HistoryManager
+from generator.recursion_manager import simple_refiner
 
 # ─── Logging Setup ────────────────────────────────────────────────
+
 logger = logging.getLogger("generator.main")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
+logger.propagate = False
 
-# ─── Imports from other subsystems ───────────────────────────────
-from ai_graph.dependency_mapper import DependencyGraph
-from ai_validation.schema_validator import validate_workflow
-from ai_visualization.mermaid_generator import mermaid_from_workflow
-from generator.exporters import export_json, export_markdown
-from generator.history import HistoryManager
-from generator.recursion_manager import simple_refiner
 
-# Optional telemetry integration
+# ─── Optional telemetry integration ──────────────────────────────
+
 try:
-    from ai_monitoring.structured_logger import log_event
-except (
-    Exception
-):  # fallback if monitoring not wired yet  # pylint: disable=broad-exception-caught
+    # Import the underlying implementation, but do NOT re-export it directly.
+    from ai_monitoring.structured_logger import log_event as _raw_log_event
+except Exception:  # pylint: disable=broad-exception-caught
+    # Fallback implementation if monitoring is not wired yet.
+    def _raw_log_event(*args: Any, **kwargs: Any) -> None:  # type: ignore[unused-argument]
+        """
+        Very lenient fallback logger: accepts any args/kwargs.
 
-    def log_event(event: str, payload: Optional[dict] = None) -> None:
+        We try to extract an event name and payload if possible for logging,
+        but otherwise just emit a generic info line.
+        """
+        if args:
+            event = args[0]
+        else:
+            event = "<unknown-event>"
+        payload = None
+        if len(args) > 1:
+            payload = args[1]
+        elif "payload" in kwargs:
+            payload = kwargs["payload"]
         logger.info("log_event(%s, %r)", event, payload)
 
+
+def log_event(
+    event: str,
+    payload: Optional[Dict[str, Any]] = None,
+) -> None:
+    """
+    Thin wrapper around the underlying telemetry logger.
+
+    This gives us a stable, simple signature for the rest of the MVM code,
+    regardless of how ai_monitoring.structured_logger.log_event is defined.
+    """
+    _raw_log_event(event, payload)
+
+
+# ─── Defaults ────────────────────────────────────────────────────
 
 # Default template path for MVM demos (used when no --template is given)
 DEFAULT_TEMPLATE = Path("data/templates/campfire_workflow.json")
 
 
 # ─── CLI Parsing ─────────────────────────────────────────────────
+
 def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
     """
     Parse command-line arguments for the MVM entrypoint.
@@ -114,6 +146,7 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
 
 
 # ─── IO Helpers ──────────────────────────────────────────────────
+
 def load_workflow(path: Path) -> Dict[str, Any]:
     """
     Load a workflow JSON file from disk.
@@ -128,6 +161,7 @@ def load_workflow(path: Path) -> Dict[str, Any]:
 
 
 # ─── Core Processing Pipeline ────────────────────────────────────
+
 def process_workflow(
     workflow: Dict[str, Any],
     *,
@@ -183,6 +217,7 @@ def process_workflow(
 
 
 # ─── Export & History Recording ──────────────────────────────────
+
 def export_artifacts(
     workflow: Dict[str, Any],
     out_dir: Path,
@@ -227,7 +262,7 @@ def record_history_if_needed(
     new_score = float(new_eval.get("composite_score", 0.0) or 0.0)
     score_delta = new_score - orig_score
 
-    modifications = []
+    modifications: list[str] = []
     if len(refined.get("modules", [])) != len(original.get("modules", [])):
         modifications.append("Module count changed")
     if new_score != orig_score:
@@ -238,14 +273,13 @@ def record_history_if_needed(
 
     hm = HistoryManager()
     record = hm.record_transition(
-        parent_workflow=parent_id,
-        child_workflow=child_id,
+        parent_workflow_id=parent_id,
+        child_workflow_id=child_id,
         modifications=modifications,
         score_delta=score_delta,
-        metadata={"original_eval": orig_eval, "refined_eval": new_eval},
     )
     logger.info(
-        "Recorded history: %s -> %s (Δscore=%.3f)",
+        "Recorded history: %s -> %s (Δ score=%.3f)",
         record.parent_workflow,
         record.child_workflow,
         record.score_delta,
@@ -253,6 +287,7 @@ def record_history_if_needed(
 
 
 # ─── Public API Entry for Programmatic Use ───────────────────────
+
 def run_mvm(
     workflow_source: Union[Path, Dict[str, Any]],
     *,
@@ -290,7 +325,11 @@ def run_mvm(
 
 
 # ─── Main CLI Entrypoint ─────────────────────────────────────────
+
 def main(argv: Optional[list] = None) -> int:
+    """
+    Command-line entrypoint for the SSWG MVM generator.
+    """
     args = parse_args(argv)
 
     if args.version:
@@ -307,8 +346,8 @@ def main(argv: Optional[list] = None) -> int:
                 "Loaded workflow from template slug '%s' via data.templates",
                 args.template,
             )
-        except Exception as exc:  # pylint: disable=broad-exception-caught
-            logger.error("Failed to load template '%s': %s", args.template, exc)
+        except Exception:  # pylint: disable=broad-exception-caught
+            logger.exception("Failed to load template '%s'", args.template)
             return 1
     else:
         workflow_source = args.workflow_json
@@ -326,11 +365,10 @@ def main(argv: Optional[list] = None) -> int:
             refined.get("workflow_id", "<unknown>"),
         )
         return 0
-    except Exception as exc:  # pylint: disable=broad-exception-caught
-        logger.error("MVM run failed: %s", exc)
+    except Exception:  # pylint: disable=broad-exception-caught
+        logger.exception("MVM run failed")
         return 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-# End of generator/main.py

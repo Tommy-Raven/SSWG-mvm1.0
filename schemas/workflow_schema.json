@@ -1,19 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/workflow_schema.json",
   "title": "Workflow Schema",
   "description": "Defines the full recursive instructional workflow architecture.",
   "type": "object",
   "required": ["workflow_id", "version", "metadata", "phases"],
   "properties": {
-    "$schema": {
-      "type": "string",
-      "format": "uri"
-    },
-    "$id": {
-      "type": "string",
-      "format": "uri"
-    },
     "schema_version": {
       "type": "string"
     },
@@ -76,5 +67,5 @@
       "required": ["nodes", "edges"]
     }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }

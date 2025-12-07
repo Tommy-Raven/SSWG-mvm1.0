@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/ontology_schema.json",
   "title": "Instructional Workflow Ontology",
   "description": "Defines semantic relationships among workflow components.",
   "type": "object",
@@ -83,6 +82,9 @@
         "type": "string"
       },
       "description": "List of quality metrics used during workflow evaluation."
+    },
+    "metadata": {
+      "$ref": "ontology_schema.json"
     }
   },
   "required": ["workflow_id", "purpose", "target_audience", "phases", "dependency_graph"]

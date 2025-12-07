@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/prompt_schemas.json",
   "title": "Instructional Workflow Prompt Schema",
   "description": "Validates user input before generating a workflow.",
   "type": "object",
@@ -40,6 +39,9 @@
       "type": "string",
       "enum": ["technical", "friendly", "wizardly", "academic"],
       "description": "Preferred tone or voice of instruction."
+    },
+    "metadata": {
+      "$ref": "prompt_schemas.json"
     }
   },
   "required": ["purpose", "target_audience", "style"]

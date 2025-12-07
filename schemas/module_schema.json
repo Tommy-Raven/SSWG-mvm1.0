@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/module_schema.json",
   "title": "Module Schema",
   "description": "Defines a modular instructional unit that can be reused across workflows.",
   "type": "object",
@@ -35,7 +34,7 @@
       }
     },
     "metadata": {
-      "$ref": "metadata_schema.json"
+      "$ref": "module_schema.json"
     }
   },
   "additionalProperties": false

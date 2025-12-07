@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/phase_schema.json",
   "title": "Phase Schema",
   "description": "A workflow phase composed of one or more instructional tasks.",
   "type": "object",
@@ -28,7 +27,10 @@
   },
   "evaluation_schema": {
     "$ref": "evaluation_schema.json"
-  }
+  },
+    "metadata": {
+      "$ref": "phase_schema.json"
+    }
 },
 "additionalProperties": false
 }

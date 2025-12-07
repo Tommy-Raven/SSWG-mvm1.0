@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/evaluation_schema.json",
   "title": "Evaluation Schema",
   "type": "object",
   "required": [],

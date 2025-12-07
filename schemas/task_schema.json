@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Tommy-Raven/SSWG-mvm1.0/tree/main/schemas/task_schema.json",
   "title": "Task Schema",
   "description": "An instructional task within a phase.",
   "type": "object",
@@ -37,6 +36,9 @@
     },
     "notes": {
       "type": "string"
+    },
+     "metadata": {
+      "$ref": "task_schema.json"
     }
   },
   "additionalProperties": false
