@@ -20,3 +20,12 @@ logs/
 *.csv
 *.json
 *.xlsx
+# Ignore all new MVM outputs by default
+data/outputs/*
+
+# Keep these canonical artifacts tracked
+!data/outputs/meta_template_20251203230038.md
+!data/outputs/training_template_20251207034010.md
+!data/outputs/training_template_20251207034925.md
+!data/outputs/unnamed_workflow.md
+!data/outputs/workflow_001.md
