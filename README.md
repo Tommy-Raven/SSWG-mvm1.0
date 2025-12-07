@@ -1,5 +1,5 @@
-# **SSWG–MVM v.09.mvm.25**  
-### *Synthetic Synthesist of Workflow Generation — Minimum Viable Model*
+# **SSWG–MVM v.0.0.9mvm**  
+### *sswg — Synthetic Synthesist of Workflow Generation (Minimum Viable Model)*
 
 <div id="top"></div>
 <div align="center">
@@ -8,207 +8,216 @@
 
 <div align="center">
 <h2>SSWG–MVM</h2>
-<i>Synthetic Synthesist of Workflow Generation — v.09.mvm.25</i>
+<i>Recursive, Schema-Aligned Workflow Engine • Designed by Tommy Raven</i>
 </div>
-
----
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/status-active-7E3ACE?style=for-the-badge)
-![Python](https://img.shields.io/badge/python-3.10+-blue?style=for-the-badge&logo=python)
-![Architecture](https://img.shields.io/badge/architecture-recursive_AI-black?style=for-the-badge)
-![License](https://img.shields.io/badge/license-Raven_Recordings_LLC_©2025-8A8A8A?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-v.09.mvm.25-7E3ACE?style=for-the-badge)
-![Codename](https://img.shields.io/badge/codename-SSWG_MVM-purple?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-7E3ACE?style=for-the-badge)
+![Build](https://img.shields.io/badge/Build-Stable-4B9CD3?style=for-the-badge)
+![Version](https://img.shields.io/badge/v.09.mvm.25-Pre--Release-9E3CE7?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
+![Architecture](https://img.shields.io/badge/Architecture-Recursive_AI-black?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Proprietary_(Pre--Release)-black?style=for-the-badge)
 
 </div>
 
----
-
-<div align="center">
-<a href="https://git.io/typing-svg">
-<img src="https://readme-typing-svg.demolab.com?font=Roboto+Slab&color=%237E3ACE&size=30&center=true&vCenter=true&width=650&lines=Synthetic+Synthesist+of+Workflow+Generation;Recursive+AI+Engine;Modular+Workflow+Generator;Designed+by+Tommy+Raven;Recursive.+Schema-Based.+Deterministic.">
-</a>
-</div>
+> **Pre-release notice:** SSWG–MVM is proprietary software; private evaluation is allowed, but redistribution, hosting, model-training, or derivative use is prohibited.
 
 ---
 
-# 🧠 Overview
+## ⚖️ Legal At-A-Glance
 
-**SSWG–MVM** is a **recursive, schema-aligned AI engine** that generates, validates, evolves, and publishes **instructional workflows**.
+**Current Status (v0.9.0mvm)**  
+- Proprietary • All rights reserved  
+- No redistribution, resale, hosting, or dataset extraction  
+- No forks or derivative systems  
+- Local evaluation permitted only  
 
-Instead of producing ephemeral responses, SSWG generates *structured systems*:
+**Future Licensing (v1.0.0ts)**  
+- Licensed Use Only  
+- No ownership transfer  
+- No commercial redistribution  
+- No agent/model training  
 
-- Multi-phase workflows  
-- Dependency graphs  
-- Metadata-rich artifacts  
-- Deterministic lineage histories  
+See: `LICENSE.md` and `TERMS_OF_USE.md`.
+
+---
+
+## 🧠 Overview
+
+**SSWG–MVM** is the Minimum Viable Model of *sswg — Synthetic Synthesist of Workflow Generation*:  
+a recursive, schema-aligned AI engine that creates deterministic, multi-phase instructional workflows.
+
+Instead of producing isolated responses, SSWG synthesizes structured systems:
+
+- Multi-phase workflow specifications  
+- Dependency graphs (DAG-based)  
+- Schema-validated JSON artifacts  
+- Versioned lineage records  
 - Recursive refinement cycles  
 
 Author: **Tommy Raven (Thomas Byers)**  
-Copyright: **Raven Recordings, LLC © 2025**
+© Raven Recordings ©️ 2025  
 
 ---
 
-# 🧩 System Design Philosophy
+## 🧩 System Design Philosophy
 
-> *“Teach the workflow how to teach itself.”*
+**“Teach the workflow how to teach itself.”**
 
-SSWG–MVM relies on:
+### Recursion  
+Workflows become seeds for subsequent generations.
 
-### 🪞 Recursion  
-Each workflow seeds the next.
+### Schema Integrity  
+Strict JSON schema validation guarantees reproducibility.
 
-### 🔐 Schema Integrity  
-Strict JSON validation for reproducibility.
+### Modularity  
+Phases → tasks → dependencies → evaluation → refinement.
 
-### 🔨 Modularity  
-Phases → tasks → dependencies → evaluation.
-
-### 🔁 Determinism  
-Reproducible output + versioned lineage.
+### Determinism  
+Outputs are stable, regenerable, and lineage-tracked.
 
 ---
 
-# 🏛 System Architecture
+## 🏛 System Architecture
 
-```
-sswg-mvm/
-├── generator/              → Main pipeline (IO, refinement, exporting)
-├── ai_validation/          → JSON schema validation
-├── ai_graph/               → Dependency graph + DAG autocorrection
-├── ai_recursive/           → Recursion engine
-├── ai_memory/              → History + lineage tracking
-├── ai_visualization/       → Mermaid + Graphviz exporters
-├── ai_monitoring/          → Structured event logging
-├── data/templates/         → Seed templates
-└── schemas/                → Canonical workflow schema
-```
+    SSWG-mvm1.0/
+    ├── generator/
+    │     └── main.py                 → Primary workflow generator entry point
+    ├── ai_validation/                → JSON schema enforcement
+    ├── ai_graph/                     → DAG building & correction logic
+    ├── ai_recursive/                 → Recursion engine
+    ├── ai_memory/                    → Lineage & version tracking
+    ├── ai_visualization/             → Mermaid & Graphviz exporters
+    ├── ai_monitoring/                → Logging & telemetry
+    ├── data/templates/               → Seed workflow templates
+    └── schemas/                      → Canonical JSON schemas
 
 ---
 
-# ⭐ Core Features
+## ⭐ Core Features
 
-- Template-based generation  
-- Recursive refinement cycles  
-- Schema validation (strict/extended)  
-- Dependency graph construction  
-- JSON & Markdown exporters  
+- Template-driven workflow synthesis  
+- Recursive refinement engine  
+- Strict schema validation (Draft 2020-12)  
+- Dependency graph construction & autocorrection  
+- JSON + Markdown artifact exporters  
 - Mermaid diagram generation  
-- Lineage + history tracking  
-- CI/CD-based auto version bumping  
+- Version history + lineage tracking  
+- CI/CD workflow automation (tests, PRs, docs)  
 
 ---
 
-# 🌀 Operational Pipeline
+## 🌀 Operational Pipeline
 
-1. Load template (creative, technical, educational, metacognitive)
-2. Validate schema
-3. Build dependency graph
-4. Run recursive refinement cycle
-5. Export artifacts  
-6. Record lineage  
-7. Auto-bump version if core modules updated  
-
----
-
-# 📄 Templates Included
-
-| Template | Domain | Purpose |
-|---------|--------|---------|
-| creative_writing_template.json | Literary Arts | Narrative/poetic structures |
-| technical_procedure_template.json | Engineering | SOP-style reproducible procedures |
-| meta_reflection_template.json | Metacognition | Self-evaluating cognitive frameworks |
-| training_curriculum_template.json | Education | Curriculum generation |
+1. Load template  
+2. Normalize input and validate against schema  
+3. Build dependency graph (DAG)  
+4. Execute recursive refinement steps  
+5. Produce artifacts (JSON, Mermaid, Markdown)  
+6. Record lineage snapshot  
+7. Auto-bump version if core modules changed  
 
 ---
 
-# 🛠 Setup & Usage
+## 📄 Included Templates
 
-### Clone:
-```bash
-git clone https://github.com/Tommy-Raven/AI_instructions_workflow.git
-cd AI_instructions_workflow
-```
-
-### Dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### Run Generator:
-```bash
-python3 -m generator.main --template creative --preview
-```
-
-Artifacts output to:
-
-```
-data/outputs/
-```
+| Template File                       | Domain         | Purpose                                |
+|------------------------------------|----------------|----------------------------------------|
+| `creative_writing_template.json`   | Literary Arts  | Narrative & poetic workflow structures |
+| `technical_procedure_template.json`| Engineering    | SOP-style procedural workflows         |
+| `meta_reflection_template.json`    | Metacognition  | Self-evaluating process frameworks     |
+| `training_curriculum_template.json`| Education      | Modular curriculum design structures   |
 
 ---
 
-# 🧪 Testing
+## 🛠 Setup & Usage
 
-```bash
-pytest -v
-```
+### Clone the Repository
 
-Tests cover:
+    git clone https://github.com/Tommy-Raven/SSWG-mvm1.0.git
+    cd SSWG-mvm1.0
 
-- CLI  
-- Validation layers  
-- Exporters  
+### Install Dependencies
+
+    pip install -r requirements.txt
+
+### Run the Generator (exact entry path)
+
+    python3 generator/main.py --template creative --preview
+
+Artifacts will be created under:
+
+    data/outputs/
+
+
+## 🧪 Testing
+
+Run the full test suite:
+
+    pytest -v
+
+Test coverage includes:
+
+- CLI behaviors  
+- Template normalization  
+- Schema validation  
 - Graph engine  
 - Recursive engine  
+- Exporters  
 - Version diffing  
 - End-to-end workflow lifecycle  
 
+
+## 🔄 CI/CD Automation
+
+### Implemented
+
+- Auto-version bump  
+- Automated documentation generation  
+- Full test execution  
+- Auto-PR generation for version bumps  
+
+### Planned  
+
+- MkDocs documentation site on GitHub Pages  
+
 ---
 
-# 🔄 CI/CD Automation
-
-Current actions:
-
-### ✔ Auto-Version Bump (core module detection)  
-### ✔ Auto-Generated Docs  
-### ✔ Test workflow  
-### ✔ Auto-PR creation  
-
-Upcoming:
-
-### 🚧 MkDocs site (auto-published to GitHub Pages)
-
----
-
-# 👤 Author & Contact
+## 👤 Author & Contact
 
 **Tommy Raven**  
 AI Researcher • Workflow Engineer • Python Developer  
-Raven Recordings, LLC © 2025  
+© Raven Recordings, LLC 2025  
 
-GitHub: **[@Tommy-Raven](https://github.com/Tommy-Raven)**  
-Pronouns: *Apache / Helicopter* 🚁😭  
-Fun fact: *Not actually an Apache helicopter.*  
-Confused but thriving on GitHub.  
+GitHub: **https://github.com/Tommy-Raven/SSWG-mvm1.0**  
+Pronouns: *Apache / Helicopter*  
+Fun fact: *Not actually an Apache helicopter — but thriving anyway.*  
 
 ---
 
-# 📜 License
+## 📜 License Summary
 
-**Raven Recordings, LLC © 2025**  
-All rights reserved.  
+**SSWG–MVM is proprietary pre-release software.**  
+Private evaluation is permitted; redistribution, resale, hosting, model-training,  
+or derivative works are **not allowed**. See full terms in `LICENSE.md`.
 
 ---
 
 <div align="center">
 <a href="#top">
-<img src="https://img.shields.io/static/v1?label&message=back+to+top&color=7E3ACE&style=flat-square" />
+<img src="assets/footer.png" width="100%" alt="Raven Recordings Footer" aria-hidden="true">
 </a>
 </div>
 
-<div align="center">
-<img src="assets/footer.png" width="100%">
-</div>
+---
+
+## 🧩 Version Scheme Legend
+
+- **vXX.xx.yy[tag][+tag]**  
+  - **XX** = major system architecture revision
+  - **xx** = minor system architecture revision  
+  - **+tag** = specific os/development series. Model Versions appended first, no '+' symbol, OS versioning is non-hierarchal, and opened with an '+' symbol, i.e., minimum viable model: 'mvm', Debian: '+deb', ChromeOS: '+cros', Transitive Semantic Version: 'ts', Deterministic Version: 'dtr', etc
+  - **yy** = iterative refinement/patch release  
+- **Pre-release** (like `v0.0.9mvm`) = additional licensing restrictions apply.
