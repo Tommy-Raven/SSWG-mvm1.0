@@ -154,7 +154,7 @@ jobs:
           echo "- Automated detection triggered PR" >> anomaly.md
 
       - name: 📝 Open Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@d4f3be6ce6f4083b7ac7490ab98b48a62db1ee41
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "⚠️ SSWG–MVM Benchmark Anomaly Detected"
