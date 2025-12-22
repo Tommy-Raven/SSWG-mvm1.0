@@ -40,23 +40,25 @@ jobs:
 
     steps:
       - name: 🧾 Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332692973e3d937129bcbf40652eb9f2f61becf3332  # v4 pinned
-
-      - name: 🐍 Set up Python 3.11
-        uses: actions/setup-python@82c7e631bb3cfad61ab9166887a6c1b1d5ef5c2  # v5 pinned
-        with:
-          python-version: "3.11"
-          cache: "pip"
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6
 
       - name: 📦 Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          if [ -f pyproject.toml ]; then
-            pip install -e .[dev]
-          elif [ -f REQUIREMENTS.txt ]; then
-            pip install -r REQUIREMENTS.txt
-          fi
-          pip install pytest
+          if [ -f reproducibility/requirements.txt ]; 
+            then
+              pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; 
+            then
+              pip install -r REQUIREMENTS.txt
+          if [ -f pyproject.toml ]; 
+            then
+              pip install -e ".[dev]"
+          elif [ -f build/REQUIREMENTS.txt ]; 
+            then
+              pip install -r build/REQUIREMENTS.txt
+          pip install fastapi uvicorn flake8 pytest httpx pytest rich black json
+
 
       - name: 🧪 Execute tests
         run: |
@@ -68,3 +70,5 @@ jobs:
         with:
           name: python-test-results
           path: tests/
+
+
