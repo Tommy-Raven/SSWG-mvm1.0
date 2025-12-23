@@ -10,6 +10,7 @@ pipeline can demonstrate recursive improvement.
 
 from __future__ import annotations
 
+<<<<<<< HEAD
 import json
 import logging
 from dataclasses import dataclass
@@ -17,6 +18,9 @@ from typing import Any, Callable, Dict, Optional
 
 from modules.llm_adapter import RefinementContract, generate_refinement
 import logging
+=======
+import logging
+>>>>>>> 87c21bd0107edebdcdc02a51a06674b9e2920722
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -99,6 +103,7 @@ class RecursionManager:
     """Decide whether to recurse and generate refined workflow variants."""
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 """    At MVM stage, refinement is non-destructive and only annotates metadata.
     """
 
@@ -153,6 +158,15 @@ class RecursionManager:
         output_dir: Path = Path("data/outputs"),
     ) -> None:
         self.policy = policy or RecursionPolicy()
+=======
+    def __init__(
+        self,
+        policy: Optional[RecursionPolicy] = None,
+        *,
+        output_dir: Path = Path("data/outputs"),
+    ) -> None:
+        self.policy = policy or RecursionPolicy()
+>>>>>>> 87c21bd0107edebdcdc02a51a06674b9e2920722
         self.output_dir = output_dir
         self.delta_calculator = SemanticDeltaCalculator()
         self.feedback = FeedbackIntegrator()
@@ -275,6 +289,7 @@ class RecursionManager:
             return False
         return score_delta >= self.policy.min_improvement
 
+<<<<<<< HEAD
     def refine_workflow(
         self,
         workflow_data: Dict[str, Any],
@@ -391,6 +406,13 @@ def simple_refiner(workflow: Dict[str, Any]) -> Dict[str, Any]:
         candidate = self._propose_regeneration(workflow_data, baseline_report, depth)
         candidate_report = self._evaluate(candidate)
 
+=======
+    def run_cycle(self, workflow_data: Dict[str, Any], depth: int = 0) -> RecursionOutcome:
+        baseline_report = self._evaluate(workflow_data)
+        candidate = self._propose_regeneration(workflow_data, baseline_report, depth)
+        candidate_report = self._evaluate(candidate)
+
+>>>>>>> 87c21bd0107edebdcdc02a51a06674b9e2920722
         score_delta = (
             candidate_report["quality"]["overall_score"]
             - baseline_report["quality"]["overall_score"]
