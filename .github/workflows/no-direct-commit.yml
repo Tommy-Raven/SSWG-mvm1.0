@@ -1,13 +1,48 @@
-name: Enforce PR-only Policy
+# =====================================================================
+# SSWG–MVM Governance Rule: PR-Only Enforcement
+# File: .github/workflows/no-direct-commit.yml
+#
+# Purpose:
+#   - Block ALL direct pushes to protected branches.
+#   - Allow ONLY:
+#       * Tommy-Raven (project owner)
+#       * GitHub Actions bot performing CI/CD
+# =====================================================================
 
-on: push
+name: 🚫 Enforce PR-Only Policy
+
+on:
+  push:
+    branches:
+      - main
+      - canonical
+      - dev
+      - mvm
 
 jobs:
   block-direct-push:
-    if: github.actor != 'Tommy-Raven'
     runs-on: ubuntu-latest
+
+    # ------------------------------------------------------------------
+    # Conditions for blocking:
+    #   ❌ Any human except the owner: blocked
+    #   ❌ Any unknown service account: blocked
+    #   ✅ GitHub Actions bots: allowed
+    #   ✅ Repository owner (Tommy-Raven): allowed
+    # ------------------------------------------------------------------
+    if: >
+      github.actor != 'Tommy-Raven' &&
+      github.actor != 'github-actions' &&
+      github.actor != 'github-actions[bot]'
+
     steps:
-      - name: Reject direct push
+      - name: ❌ Reject Direct Push
         run: |
-          echo "Direct pushes to protected branches are not allowed."
+          echo "⛔ Direct push blocked."
+          echo ""
+          echo "Branch protection is enabled for SSWG-MVM."
+          echo "Only the repository owner and CI/CD bots may push directly."
+          echo ""
+          echo "Actor: ${{ github.actor }}"
+          echo "You must open a Pull Request instead."
           exit 1

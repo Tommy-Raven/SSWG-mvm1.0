@@ -1,0 +1,74 @@
+# ===================================================================== 
+# SSWG–MVM Python Tests Workflow
+# File: .github/workflows/python-tests.yml
+#
+# Purpose:
+#   - Run the full pytest suite for SSWG–MVM.
+#   - Ensure all modules (API, generator, ai_core, etc.) pass.
+#
+# Author: Tommy Raven / Raven Recordings, LLC ©2025
+# Version: v0.9.mvm.25
+# =====================================================================
+
+name: 🧪 SSWG–MVM Python Tests
+
+on:
+  push:
+    branches: [ "main", "dev", "canonical" ]
+    paths:
+      - "tests/**"
+      - "generator/**"
+      - "ai_*/*"
+      - "API/**"
+      - ".github/workflows/python-tests.yml"
+  pull_request:
+    branches: [ "main", "canonical" ]
+    paths:
+      - "tests/**"
+      - "generator/**"
+      - "ai_*/*"
+      - "API/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: 🧪 Run PyTest Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6
+
+      - name: 📦 Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; 
+            then
+              pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; 
+            then
+              pip install -r REQUIREMENTS.txt
+          if [ -f pyproject.toml ]; 
+            then
+              pip install -e ".[dev]"
+          elif [ -f build/REQUIREMENTS.txt ]; 
+            then
+              pip install -r build/REQUIREMENTS.txt
+          pip install fastapi uvicorn flake8 pytest httpx pytest rich black json
+
+
+      - name: 🧪 Execute tests
+        run: |
+          pytest -q tests --disable-warnings --maxfail=1 --tb=short
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b  # v4.3.4 pinned
+        with:
+          name: python-test-results
+          path: tests/
+
+

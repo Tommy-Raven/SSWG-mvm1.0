@@ -23,39 +23,85 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from ai_graph.dependency_mapper import DependencyGraph
+from ai_validation.schema_validator import validate_workflow
+from ai_visualization.mermaid_generator import mermaid_from_workflow
+from ai_visualization.export_manager import export_graphviz
+from ai_visualization.export_manager import export_json as viz_export_json
+from ai_visualization.export_manager import export_markdown as viz_export_markdown
+from ai_core.orchestrator import Orchestrator
+from ai_core.workflow import Workflow
+from ai_evaluation.evaluation_engine import evaluate_workflow_quality
+from ai_memory.feedback_integrator import FeedbackIntegrator
+from ai_recursive.version_diff_engine import compute_diff_summary
 from data.data_parsing import load_template
+from generator.exporters import export_json, export_markdown
+from generator.history import HistoryManager
+from generator.recursion_manager import RecursionManager
 
 # ─── Logging Setup ────────────────────────────────────────────────
+
 logger = logging.getLogger("generator.main")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
+logger.propagate = False
 
-# ─── Imports from other subsystems ───────────────────────────────
-from ai_graph.dependency_mapper import DependencyGraph
-from ai_validation.schema_validator import validate_workflow
-from ai_visualization.mermaid_generator import mermaid_from_workflow
-from generator.exporters import export_json, export_markdown
-from generator.history import HistoryManager
-from generator.recursion_manager import simple_refiner
 
-# Optional telemetry integration
+# ─── Optional telemetry integration ──────────────────────────────
+
 try:
-    from ai_monitoring.structured_logger import log_event
-except (
-    Exception
-):  # fallback if monitoring not wired yet  # pylint: disable=broad-exception-caught
+    # Import the underlying implementation, but do NOT re-export it directly.
+    from ai_monitoring.structured_logger import log_event as _raw_log_event
+except Exception:  # pylint: disable=broad-exception-caught
+    # Fallback implementation if monitoring is not wired yet.
+    def _raw_log_event(*args: Any, **kwargs: Any) -> None:  # type: ignore[unused-argument]
+        """
+        Very lenient fallback logger: accepts any args/kwargs.
 
-    def log_event(event: str, payload: Optional[dict] = None) -> None:
+        We try to extract an event name and payload if possible for logging,
+        but otherwise just emit a generic info line.
+        """
+        if args:
+            event = args[0]
+        else:
+            event = "<unknown-event>"
+        payload = None
+        if len(args) > 1:
+            payload = args[1]
+        elif "payload" in kwargs:
+            payload = kwargs["payload"]
         logger.info("log_event(%s, %r)", event, payload)
 
+
+def log_event(
+    event: str,
+    payload: Optional[Dict[str, Any]] = None,
+) -> None:
+    """
+    Thin wrapper around the underlying telemetry logger.
+
+    This gives us a stable, simple signature for the rest of the MVM code,
+    regardless of how ai_monitoring.structured_logger.log_event is defined.
+    """
+    _raw_log_event(event, payload)
+
+
+# ─── Defaults ────────────────────────────────────────────────────
 
 # Default template path for MVM demos (used when no --template is given)
 DEFAULT_TEMPLATE = Path("data/templates/campfire_workflow.json")
 
 
 # ─── CLI Parsing ─────────────────────────────────────────────────
+
 def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
     """
     Parse command-line arguments for the MVM entrypoint.
@@ -109,11 +155,17 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
             "(e.g. 'campfire_basic' → data/templates/campfire_basic.json)."
         ),
     )
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        help="Run the canonical demo pipeline end-to-end using the campfire template.",
+    )
 
     return parser.parse_args(argv)
 
 
 # ─── IO Helpers ──────────────────────────────────────────────────
+
 def load_workflow(path: Path) -> Dict[str, Any]:
     """
     Load a workflow JSON file from disk.
@@ -128,20 +180,27 @@ def load_workflow(path: Path) -> Dict[str, Any]:
 
 
 # ─── Core Processing Pipeline ────────────────────────────────────
+
 def process_workflow(
     workflow: Dict[str, Any],
     *,
     enable_refinement: bool = True,
+    out_dir: Path = Path("data/outputs"),
 ) -> Dict[str, Any]:
     """
-    Run the MVM pipeline on a workflow dict:
+    Run the MVM pipeline on a workflow dict in the canonical order:
     - schema validation
     - dependency graph autocorrect
-    - mermaid visualization
-    - simple refinement (optional)
+    - evaluation + semantic deltas
+    - recursive refinement with llm_adapter
+    - visualization exports
     """
     workflow_id = workflow.get("workflow_id", "unnamed_workflow")
     log_event("mvm.process.started", {"workflow_id": workflow_id})
+
+    orchestrator = Orchestrator()
+    workflow_obj = Workflow(workflow)
+    orchestrator.telemetry.record("loaded_via_orchestrator", {"workflow_id": workflow_obj.id})
 
     # 1. Schema validation
     ok, errors = validate_workflow(workflow)
@@ -169,20 +228,45 @@ def process_workflow(
     mermaid = mermaid_from_workflow(workflow)
     logger.info("Mermaid graph for workflow %s:\n%s", workflow_id, mermaid)
 
-    # 4. Simple refinement (single iteration) if enabled
+    # 4. Evaluation + semantic scoring
+    base_quality = evaluate_workflow_quality(workflow)
+    workflow.setdefault("evaluation", {})["quality"] = base_quality
+
+    # 5. Recursive refinement (single iteration) if enabled
     refined = deepcopy(workflow)
     if enable_refinement:
-        refined = simple_refiner(refined)
+        recursion_manager = RecursionManager(output_dir=out_dir)
+        outcome = recursion_manager.run_cycle(refined, depth=0)
+        refined = outcome.refined_workflow
+        refined.setdefault("evaluation", {}).update(
+            {
+                "before": outcome.before_report.get("quality"),
+                "after": outcome.after_report.get("quality"),
+                "semantic_delta": outcome.semantic_delta,
+                "score_delta": outcome.score_delta,
+                "plot": str(outcome.plot_path),
+            }
+        )
         log_event(
             "mvm.process.refined",
-            {"workflow_id": refined.get("workflow_id", workflow_id)},
+            {
+                "workflow_id": refined.get("workflow_id", workflow_id),
+                "score_delta": outcome.score_delta,
+                "semantic_delta": outcome.semantic_delta,
+            },
         )
+
+    # 6. Export updated visualization assets
+    export_graphviz(refined, str(out_dir))
+    viz_export_json(refined, str(out_dir))
+    viz_export_markdown(refined, str(out_dir))
 
     log_event("mvm.process.completed", {"workflow_id": workflow_id})
     return refined
 
 
 # ─── Export & History Recording ──────────────────────────────────
+
 def export_artifacts(
     workflow: Dict[str, Any],
     out_dir: Path,
@@ -201,6 +285,23 @@ def export_artifacts(
     md_path = export_markdown(workflow, out_dir_str)
 
     return {"json": json_path, "markdown": md_path}
+
+
+def record_feedback(original: Dict[str, Any], refined: Dict[str, Any]) -> None:
+    """Record diff-driven feedback into persistent memory."""
+
+    diff_summary = compute_diff_summary(original, refined)
+    clarity_after = (
+        refined.get("evaluation", {})
+        .get("after", {})
+        .get("metrics", {})
+        .get("clarity", 0.0)
+    )
+    FeedbackIntegrator().record_cycle(
+        diff_summary,
+        {"clarity_score": clarity_after},
+        regenerated=True,
+    )
 
 
 def record_history_if_needed(
@@ -227,7 +328,7 @@ def record_history_if_needed(
     new_score = float(new_eval.get("composite_score", 0.0) or 0.0)
     score_delta = new_score - orig_score
 
-    modifications = []
+    modifications: list[str] = []
     if len(refined.get("modules", [])) != len(original.get("modules", [])):
         modifications.append("Module count changed")
     if new_score != orig_score:
@@ -238,14 +339,13 @@ def record_history_if_needed(
 
     hm = HistoryManager()
     record = hm.record_transition(
-        parent_workflow=parent_id,
-        child_workflow=child_id,
+        parent_workflow_id=parent_id,
+        child_workflow_id=child_id,
         modifications=modifications,
         score_delta=score_delta,
-        metadata={"original_eval": orig_eval, "refined_eval": new_eval},
     )
     logger.info(
-        "Recorded history: %s -> %s (Δscore=%.3f)",
+        "Recorded history: %s -> %s (Δ score=%.3f)",
         record.parent_workflow,
         record.child_workflow,
         record.score_delta,
@@ -253,6 +353,7 @@ def record_history_if_needed(
 
 
 # ─── Public API Entry for Programmatic Use ───────────────────────
+
 def run_mvm(
     workflow_source: Union[Path, Dict[str, Any]],
     *,
@@ -278,9 +379,14 @@ def run_mvm(
         workflow = deepcopy(workflow_source)
 
     original = deepcopy(workflow)
-    refined = process_workflow(workflow, enable_refinement=enable_refinement)
+    refined = process_workflow(
+        workflow,
+        enable_refinement=enable_refinement,
+        out_dir=out_dir,
+    )
     export_artifacts(refined, out_dir)
     record_history_if_needed(original, refined, enable_history=enable_history)
+    record_feedback(original, refined)
 
     if preview:
         snippet = json.dumps(refined, indent=2)[:800]
@@ -290,7 +396,11 @@ def run_mvm(
 
 
 # ─── Main CLI Entrypoint ─────────────────────────────────────────
+
 def main(argv: Optional[list] = None) -> int:
+    """
+    Command-line entrypoint for the SSWG MVM generator.
+    """
     args = parse_args(argv)
 
     if args.version:
@@ -298,17 +408,23 @@ def main(argv: Optional[list] = None) -> int:
         return 0
 
     # Resolve workflow source:
+    # - --demo forces the canonical template + output dir
     # - If --template is provided, load from data/templates/<slug>.json
     # - Otherwise, use the path from --workflow-json
-    if args.template:
+    out_dir = args.out_dir
+    if args.demo:
+        workflow_source = DEFAULT_TEMPLATE
+        out_dir = Path("data/outputs/demo_run")
+        logger.info("Demo mode: using template %s", workflow_source)
+    elif args.template:
         try:
-            workflow_source: Union[Path, Dict[str, Any]] = load_template(args.template)
+            workflow_source = load_template(args.template)
             logger.info(
                 "Loaded workflow from template slug '%s' via data.templates",
                 args.template,
             )
-        except Exception as exc:  # pylint: disable=broad-exception-caught
-            logger.error("Failed to load template '%s': %s", args.template, exc)
+        except Exception:  # pylint: disable=broad-exception-caught
+            logger.exception("Failed to load template '%s'", args.template)
             return 1
     else:
         workflow_source = args.workflow_json
@@ -316,7 +432,7 @@ def main(argv: Optional[list] = None) -> int:
     try:
         refined = run_mvm(
             workflow_source,
-            out_dir=args.out_dir,
+            out_dir=out_dir,
             enable_refinement=not args.no_refine,
             enable_history=not args.no_history,
             preview=args.preview,
@@ -326,11 +442,10 @@ def main(argv: Optional[list] = None) -> int:
             refined.get("workflow_id", "<unknown>"),
         )
         return 0
-    except Exception as exc:  # pylint: disable=broad-exception-caught
-        logger.error("MVM run failed: %s", exc)
+    except Exception:  # pylint: disable=broad-exception-caught
+        logger.exception("MVM run failed")
         return 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-# End of generator/main.py

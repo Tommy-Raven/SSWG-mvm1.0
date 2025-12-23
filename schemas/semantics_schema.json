@@ -1,22 +1,36 @@
-
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Semantic Schema",
   "description": "Defines linguistic and logical semantic mappings between workflow elements.",
   "type": "object",
   "required": ["term", "semantic_context"],
   "properties": {
-    "term": { "type": "string" },
-    "semantic_context": { "type": "string" },
+    "term": {
+      "type": "string"
+    },
+    "semantic_context": {
+      "type": "string"
+    },
     "related_terms": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "embedding_vector": {
       "type": "array",
-      "items": { "type": "number" }
+      "items": {
+        "type": "number"
+      }
     },
-    "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+     "metadata": {
+      "$ref": "semantics_schema.json"
+    }
   },
   "additionalProperties": true
 }

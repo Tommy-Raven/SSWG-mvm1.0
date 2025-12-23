@@ -93,10 +93,16 @@ def main(argv: List[str] | None = None) -> int:
     base_dir = Path(argv[0]) if argv else DEFAULT_TEST_DIR
 
     passed, failed = run_regression_suite(base_dir)
+
+    # Example of using `passed` meaningfully:
+    # if no tests ran at all, flag that explicitly
+    if passed == 0 and failed == 0:
+        print("[regression_tests] Warning: no regression tests were executed.")
+
     # Non-zero exit code if any failures
     return 0 if failed == 0 else 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------

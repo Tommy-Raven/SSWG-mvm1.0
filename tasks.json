@@ -1,30 +1,83 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Run SSWG CLI",
-            "type": "shell",
-            "command": "python3 cli/cli.py",
-            "group": "build",
-            "presentation": {
-                "reveal": "always"
-            }
-        },
-        {
-            "label": "Run Main Generator",
-            "type": "shell",
-            "command": "python3 generator/main.py",
-            "presentation": {
-                "reveal": "always"
-            }
-        },
-        {
-            "label": "Lint Code",
-            "type": "shell",
-            "command": "flake8 .",
-            "presentation": {
-                "reveal": "never"
-            }
-        }
-    ]
+  "version": "v1.0.0mvm",
+  "tasks": [
+    {
+      "label": "Run SSWG CLI",
+      "type": "shell",
+      "command": "python3 cli/cli.py",
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Run Main Generator",
+      "type": "shell",
+      "command": "python3 generator/main.py",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Lint Code (full repo)",
+      "type": "shell",
+      "command": "flake8 .",
+      "group": "test",
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+
+    {
+      "label": "Pytest: Core tests",
+      "type": "shell",
+      "command": "python3 -m pytest -q tests --disable-warnings --maxfail=1 --tb=short",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Pytest: Core + API + Generator",
+      "type": "shell",
+      "command": "python3 -m pytest -q tests API/tests generator/tests --disable-warnings --maxfail=1 --tb=short",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "SSWG CI (quick: lint + tests + bench)",
+      "type": "shell",
+      "command": "python3 scripts/local_ci.py all",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "SSWG CI (lint + validation only)",
+      "type": "shell",
+      "command": "python3 scripts/local_ci.py sswg-ci",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "SSWG Bench (recursive benchmark only)",
+      "type": "shell",
+      "command": "python3 scripts/local_ci.py bench",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    }
+  ]
 }

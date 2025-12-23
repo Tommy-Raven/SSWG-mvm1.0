@@ -1,43 +1,71 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Workflow Schema",
   "description": "Defines the full recursive instructional workflow architecture.",
   "type": "object",
   "required": ["workflow_id", "version", "metadata", "phases"],
   "properties": {
+    "schema_version": {
+      "type": "string"
+    },
     "workflow_id": {
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$"
     },
-    "version": { "type": "string" },
-    "metadata": { "$ref": "metadata_schema.json" },
+    "version": {
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "metadata_schema.json"
+    },
     "phases": {
       "type": "array",
-      "items": { "$ref": "phase_schema.json" },
+      "items": {
+        "$ref": "phase_schema.json"
+      },
       "minItems": 1
     },
     "modules": {
       "type": "array",
-      "items": { "$ref": "module_schema.json" }
+      "items": {
+        "$ref": "module_schema.json"
+      }
     },
     "semantics": {
       "type": "array",
-      "items": { "$ref": "semantics_schema.json" }
+      "items": {
+        "$ref": "semantics_schema.json"
+      }
     },
-    "evaluation": { "$ref": "evaluation_schema.json" },
-    "recursion": { "$ref": "recursion_schema.json" },
+    "evaluation": {
+      "$ref": "evaluation_schema.json"
+    },
+    "recursion": {
+      "$ref": "recursion_schema.json"
+    },
     "dependency_graph": {
       "type": "object",
       "properties": {
-        "nodes": { "type": "array", "items": { "type": "string" } },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "edges": {
           "type": "array",
-          "items": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2 }
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
         }
       },
       "required": ["nodes", "edges"]
     }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }
-

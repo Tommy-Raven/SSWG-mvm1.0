@@ -1,75 +1,88 @@
-name: SSWG-MVM Recursive Benchmarks
+name: SSWG–MVM Recursive Benchmark Engine
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"   # runs nightly at 3AM UTC
+    - cron: "0 5 * * *"
+  push:
+    branches: ["main"]
+    paths:
+      - "generator/**"
+      - "ai_recursive/**"
+      - "ai_core/**"
+      - "ai_memory/**"
+
+permissions:
+  contents: read
+
+env:
+  SSWG_VERSION: "v0.9.mvm.25"
 
 jobs:
-  recursive-bench:
+  setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    outputs:
+      bench_id: ${{ steps.id.outputs.bench_id }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
+      - name: Generate benchmark ID
+        id: id
         run: |
-          pip install --upgrade pip
-          pip install -e ".[dev]"
+          echo "bench_id=$(uuidgen)" >> $GITHUB_OUTPUT
 
-      - name: Run deep recursion benchmarks
+      - name: Install deps
         run: |
-          mkdir -p benchmark_results
-          python3 - << 'EOF'
-from pathlib import Path
-import json
-from generator.main import run_mvm
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; then
+            pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; then
+            pip install -r REQUIREMENTS.txt
+          fi
 
-templates = Path("data/templates").glob("*.json")
-cycles = 10
+  recursion:
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      BENCH_ID: ${{ needs.setup.outputs.bench_id }}
 
-results = {}
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
-for tmpl in templates:
-    wf = json.loads(tmpl.read_text())
-    name = tmpl.stem
-    print(f"\n[Benchmark] Starting recursive cycles for {name}\n")
+      - name: Run benchmark
+        run: |
+          python3 - <<'EOF'
+          from ai_recursive.recursion_engine import run_recursive_cycle
+          import json
 
-    cycle_data = []
-    current_path = tmpl
+          results = []
+          for i in range(10):
+              out = run_recursive_cycle({"purpose": f"Cycle {i}", "mode": "recursive"})
+              results.append(out)
 
-    for i in range(1, cycles+1):
-        refined = run_mvm(current_path, preview=False, enable_history=True)
-        out = {
-            "cycle": i,
-            "workflow_id": refined.get("workflow_id"),
-            "evaluation": refined.get("evaluation", {}),
-            "modules": len(refined.get("modules", [])),
-        }
-        cycle_data.append(out)
+          with open("benchmark_results.json", "w") as f:
+              json.dump(results, f, indent=2)
+          EOF
 
-        # Save intermediate workflow
-        inter_path = Path(f"benchmark_results/{name}_cycle_{i}.json")
-        inter_path.write_text(json.dumps(refined, indent=2))
-        current_path = inter_path
-
-    results[name] = cycle_data
-
-# Save summary
-Path("benchmark_results/summary.json").write_text(
-    json.dumps(results, indent=2)
-)
-EOF
-
-      - name: Upload Recursive Benchmark Results
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
-          name: sswg-recursive-benchmark
-          path: benchmark_results/
+          name: recursive-bench-${{ env.BENCH_ID }}
+          path: benchmark_results.json
+
+  memory_check:
+    needs: recursion
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Validate memory coherence
+        run: |
+          python3 - <<'EOF'
+          from ai_memory.benchmark_tracker import evaluate_history_coherence
+          score = evaluate_history_coherence()
+          print("Score:", score)
+          if score < 0.5:
+              raise SystemExit("Memory coherence failure")
+          EOF

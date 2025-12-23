@@ -1,18 +1,31 @@
-
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Metadata Schema",
   "description": "Defines metadata for a Grimoire workflow, used to contextualize generation and evaluation.",
   "type": "object",
-  "required": ["purpose", "audience"],
+  "required": ["title", "description"],
   "properties": {
-    "purpose": { "type": "string", "minLength": 3 },
-    "audience": { "type": "string" },
-    "author": { "type": "string" },
-    "created": { "type": "string", "format": "date-time" },
+  "title": { "type": "string" },
+  "description": { "type": "string" },
+    "purpose": {
+      "type": "string",
+      "minLength": 3
+    },
+    "audience": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
     "tags": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "context_level": {
       "type": "string",

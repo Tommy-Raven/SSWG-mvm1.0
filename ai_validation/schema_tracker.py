@@ -16,10 +16,13 @@ or maintain a persistent registry.
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 SCHEMAS_DIR = Path(__file__).resolve().parent.parent / "schemas"
+
+logger = logging.getLogger("ai_validation.schema_tracker")
 
 
 def list_schemas() -> List[str]:
@@ -31,9 +34,7 @@ def list_schemas() -> List[str]:
     """
     if not SCHEMAS_DIR.exists():
         return []
-    return sorted(
-        p.name for p in SCHEMAS_DIR.glob("*.json") if p.is_file()
-    )
+    return sorted(p.name for p in SCHEMAS_DIR.glob("*.json") if p.is_file())
 
 
 def get_schema_path(schema_name: str) -> Optional[Path]:
@@ -57,12 +58,13 @@ def schema_exists(schema_name: str) -> bool:
     return get_schema_path(schema_name) is not None
 
 
-def _load_schema(path: Path) -> Dict:
+def _load_schema(path: Path) -> Dict[str, Any]:
     """Internal helper: load a JSON schema from path."""
-    return json.loads(path.read_text(encoding="utf-8"))
+    raw = path.read_text(encoding="utf-8")
+    return json.loads(raw)
 
 
-def get_schema_metadata(schema_name: str) -> Optional[Dict]:
+def get_schema_metadata(schema_name: str) -> Optional[Dict[str, Any]]:
     """
     Inspect a schema file and return basic metadata, if available.
 
@@ -83,10 +85,11 @@ def get_schema_metadata(schema_name: str) -> Optional[Dict]:
 
     try:
         obj = _load_schema(path)
-    except Exception:
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Failed to load schema %s: %s", path, exc)
         return None
 
-    meta = {
+    meta: Dict[str, Any] = {
         "id": obj.get("$id"),
         "title": obj.get("title"),
         "version": obj.get("version"),

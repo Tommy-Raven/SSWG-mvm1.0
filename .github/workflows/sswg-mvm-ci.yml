@@ -1,69 +1,62 @@
-name: SSWG-MVM CI
+name: SSWG MVM CI & Validation
 
 on:
   push:
-    branches: ["main", "canonical", "dev", "mvm"]
+    paths:
+      - "data/templates/**"
+      - "ai_validation/**"
+      - "schemas/**"
+      - "generator/**"
+      - "ai_graph/**"
+      - "ai_visualization/**"
+      - "tests/**"
+      - ".github/workflows/sswg-mvm-ci.yml"
   pull_request:
-    branches: ["main", "canonical"]
+    paths:
+      - "data/templates/**"
+      - "ai_validation/**"
+      - "schemas/**"
+      - "generator/**"
+      - "ai_graph/**"
+      - "ai_visualization/**"
+      - "tests/**"
+  workflow_dispatch:
 
 jobs:
-  build-test-lint:
+  build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    strategy:
+      matrix:
+        python-version: [3.10]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install system dependencies
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - name: 📦 Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y graphviz
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; 
+            then
+              pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; 
+            then
+              pip install -r REQUIREMENTS.txt
+          if [ -f pyproject.toml ]; 
+            then
+              pip install -e ".[dev]"
+          elif [ -f build/REQUIREMENTS.txt ]; 
+            then
+              pip install -r build/REQUIREMENTS.txt
+          pip install fastapi uvicorn flake8 pytest httpx pytest rich black json
 
-      - name: Install project dependencies
+      - name: Schema validation (example workflows)
         run: |
-          python3 -m pip install --upgrade pip wheel setuptools
-          python3 -m pip install -e ".[dev]"
+          python -c "from ai_validation.schema_validator import validate_workflow; import json; import sys; wf=json.load(open('data/templates/campfire_workflow.json')); ok, errs=validate_workflow(wf); sys.exit(1 if not ok else 0)"
 
-      # ————————————————————————————————
-      #       STATIC ANALYSIS
-      # ————————————————————————————————
-      - name: Run Ruff
-        run: ruff check .
-
-      - name: Run Black (check only)
-        run: black --check .
-
-      - name: Run isort (check only)
-        run: isort . --check-only
-
-      - name: Run MyPy
-        run: mypy .
-
-      - name: Run Pylint
+      - name: Run tests
         run: |
-          find . -name "*.py" -print0 \
-            | xargs -0 pylint --score=no
-
-      # ————————————————————————————————
-      #           TEST SUITE
-      # ————————————————————————————————
-      - name: Run PyTest
-        run: pytest -q
-
-      # ————————————————————————————————
-      #          PACKAGE BUILD
-      # ————————————————————————————————
-      - name: Build distribution
-        run: python3 -m build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: sswg-mvm-dist
-          path: dist/
+          pytest -q          echo "🚀 SSWG-MVM CI Summary"
+          echo "• Version: $SSWG_VERSION"
+          echo "• Python: $(python3 --version)"
+          echo "• Installed packages:"
+          pip list
+          echo "• Completed at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"

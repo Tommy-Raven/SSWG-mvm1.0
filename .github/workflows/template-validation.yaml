@@ -1,0 +1,43 @@
+name: Template Schema Validation
+
+on:
+  push:
+    paths:
+      - "data/templates/**"
+      - "schemas/**"
+      - "ai_validation/**"
+      - ".github/workflows/template-validations.yaml"
+  pull_request:
+    paths:
+      - "data/templates/**"
+      - "schemas/**"
+      - "ai_validation/**"
+      - ".github/workflows/template-validations.yaml"
+
+jobs:
+  template-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: 📦 Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; 
+            then
+              pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; 
+            then
+              pip install -r REQUIREMENTS.txt
+          fi
+          pip install fastapi uvicorn flake8 pytest httpx pytest rich black json
+
+      - name: List template files
+        run: |
+          ls -R data/templates || echo "no templates dir"
+
+      - name: Run template regression tests
+        run: |
+          python -m ai_validation.template_regression_tests

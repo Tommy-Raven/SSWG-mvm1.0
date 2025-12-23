@@ -1,76 +1,136 @@
-name: Build & Test Git REST API
+# =====================================================================
+# SSWG–MVM API CI Pipeline
+# File: .github/workflows/add_git_rest_api.yml
+# Description:
+#   Validates, lints, and tests API/ + generator/ modules.
+#   Designed for SSWG–MVM v0.9.mvm.25 governance rules.
+#
+# Author: Tommy Raven / Raven Recordings, LLC ©2025
+# =====================================================================
 
+name: "🧩 SSWG–MVM: Build & Test API"
+
+# ---------------------------------------------------------------------
+# EVENT TRIGGERS
+# ---------------------------------------------------------------------
 on:
   push:
+    branches: ["main", "dev", "canonical"]
     paths:
       - "API/**"
       - "generator/**"
-      - ".github/workflows/get-api.yml"
-    branches: [ "main", "dev" ]
+      - "ai_core/**"
+      - "ai_validation/**"
+      - ".github/workflows/add_git_rest_api.yml"
   pull_request:
+    branches: ["main", "canonical"]
     paths:
       - "API/**"
       - "generator/**"
-    branches: [ "main", "dev" ]
+      - "ai_core/**"
+      - "ai_validation/**"
   workflow_dispatch:
 
+# ---------------------------------------------------------------------
+# PERMISSIONS
+# ---------------------------------------------------------------------
 permissions:
-  contents: read
-  issues: write
+  contents: read       # API CI does not write to repo
+  checks: write
+  actions: read
 
+# ---------------------------------------------------------------------
+# JOB 1 — Build & Lint
+# ---------------------------------------------------------------------
 jobs:
   build_api:
-    name: 🧩 Build & Lint API
+    name: 🔧 Build & Lint API
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
+      # ---------------------------
+      # Checkout
+      # ---------------------------
       - name: 🧾 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
-          python-version: "3.11"
+          fetch-depth: 0
 
+      # ---------------------------
+      # Python setup
+      # ---------------------------
       - name: 📦 Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r build/REQUIREMENTS.txt
-          pip install flake8 pytest
+          python3 -m pip install --upgrade pip
+          if [ -f reproducibility/requirements.txt ]; 
+            then
+              pip install -r reproducibility/requirements.txt
+          elif [ -f REQUIREMENTS.txt ]; 
+            then
+              pip install -r REQUIREMENTS.txt
+          fi
+          pip install fastapi uvicorn flake8 pytest httpx pytest rich black json
 
-      - name: 🔍 Lint API and Generator
+      # ---------------------------
+      # Linting
+      # ---------------------------
+      - name: 🔍 Run flake8 (API + generator)
         run: |
           echo "Running flake8 linting..."
           flake8 API generator --max-line-length=120 --statistics
 
+  # -------------------------------------------------------------------
+  # JOB 2 — Unit Tests
+  # -------------------------------------------------------------------
   test_api:
-    name: 🧪 Run API Unit Tests
+    name: 🧪 Test API Modules
     needs: build_api
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: 📦 Install dependencies
-        run: pip install -r build/REQUIREMENTS.txt pytest
-      - name: 🧪 Run tests
-        run: |
-          pytest -q API/tests generator/tests --maxfail=1 --disable-warnings --tb=short
+    timeout-minutes: 10
 
-      - name: 📊 Upload results
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - name: 📦 Install dependencies
+        run: |
+          if [ -f pyproject.toml ]; then
+            pip install -e ".[dev]"
+          elif [ -f build/REQUIREMENTS.txt ]; then
+            pip install -r build/REQUIREMENTS.txt
+          fi
+          pip install flake8 pytest
+
+      # ---------------------------
+      # Run tests
+      # ---------------------------
+      - name: 🧪 Execute Unit Tests
+        run: |
+          echo "Running pytest..."
+          pytest -q API/tests generator/tests \
+            --maxfail=1 --disable-warnings --tb=short
+
+      # ---------------------------
+      # Upload test artifacts
+      # ---------------------------
+      - name: 📊 Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: api-test-results
-          path: ./tests/
+          path: .
 
+  # -------------------------------------------------------------------
+  # JOB 3 — Success Notification
+  # -------------------------------------------------------------------
   notify_results:
-    name: 🔔 Notify on Success
+    name: 🔔 Notify Success
     needs: test_api
     runs-on: ubuntu-latest
     if: success()
+
     steps:
-      - name: 💬 Post summary
+      - name: 💬 Post Summary
         run: |
-          echo "✅ API build and test pipeline completed successfully."
+          echo "🎉 SSWG–MVM API pipeline completed successfully!"
+          echo "API + generator modules linted and tested."
+          echo "Version: v0.9.mvm.25"

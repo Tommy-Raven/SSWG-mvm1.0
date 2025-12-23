@@ -1,22 +1,61 @@
-# Python
+# -------------------------
+# Python / virtualenv
+# -------------------------
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-.env
-.venv
-env/
+
+.venv/
 venv/
-# OS Files
-extensions/
+env/
+*.env
+
+# -------------------------
+# Test / tooling artifacts
+# -------------------------
+.pytest_cache/
+
+# -------------------------
+# OS / editor cruft
+# -------------------------
 .DS_Store
 Thumbs.db
+extensions/
+
+# -------------------------
 # Logs
+# -------------------------
 logs/
 *.log
+
+# -------------------------
 # Notebooks
-.ipynb_checkpoints/
-# Data files
+# -------------------------
+*.ipynb
+
+# -------------------------
+# Data files (generic)
+# NOTE: we keep JSON tracked globally (schemas, templates, configs).
+# -------------------------
 *.csv
-*.json
 *.xlsx
+
+# -------------------------
+# Generated workflow instances (non-canonical)
+# -------------------------
+# Ignore timestamped sanity-test workflows; only keep named canon (e.g. workflow_001.json)
+data/workflows/sanity_test_*.json
+
+# -------------------------
+# MVM generated outputs
+# -------------------------
+# Ignore all new MVM outputs by default
+data/outputs/*
+
+# Keep these canonical artifacts tracked
+!data/outputs/meta_template_20251203230038.md
+!data/outputs/training_template_20251207034010.md
+!data/outputs/training_template_20251207034925.md
+!data/outputs/unnamed_workflow.md
+!data/outputs/workflow_001.md
