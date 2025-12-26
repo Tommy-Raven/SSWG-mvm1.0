@@ -13,7 +13,7 @@ This document defines **mandatory** behaviors for all contributors, automation a
 - Final responses **MUST** be concise, **MUST** include citations where relevant, and **MUST** prefix any test/check commands with emojis:
   - ✅ pass
   - ⚠️ warning/limitation
-  - ❌ fail
+  - ❌ fail.
 - For frontend visual changes, agents **MUST** capture screenshots via the browser tool and **MUST** cite the artifact.
 - Agents **MUST** honor instruction precedence: system > developer > user > AGENTS, with deeper `AGENTS.md` overriding parent scopes.
 - If any placeholders or TODOs remain in the final diff, agents **MUST** include a **Notes** section after **Testing**; agents **MUST** omit the section otherwise.
@@ -30,17 +30,112 @@ Any documentation, logs, schemas, or code that violates this naming discipline *
 
 ---
 
-## 2) Canonical Mission (Non-Negotiable)
+## 2) Release Families + Version Semantics (Required)
 
-### 2.1 sswg mandate
-sswg **MUST** enforce a **phase-driven**, **audit-ready**, **9-phase** pipeline that yields deterministic measurement outputs where required.
+This repo distinguishes **release families**. Agents **MUST** treat these as authoritative taxonomy when labeling artifacts, tags, and docs.
 
-### 2.2 mvm mandate
-mvm defines the **minimum acceptable completeness** for sswg software. Workflows and tooling are invalid unless the full **9-phase** pipeline is supported and enforced.
+### 2.1 sswg (stable line)
+- `sswg vX.Y.Z` denotes a stable release line.
+- A stable `sswg` release **SHALL** be treated as “no known blocking issues” at release time and **MUST** satisfy all immutable gates in this document.
+
+### 2.2 sswg-exp (experimental line)
+- `sswg-exp vV.X.Y` denotes an experimental release.
+- `V` denotes the stable release family being experimented against (anchor family).
+- `.X.Y` denotes what is being experimented on.
+- Experimental releases **MUST** still satisfy the canonical 9-phase pipeline contract unless explicitly scoped as sandbox-only and barred from promotion.
+
+### 2.3 sswg-trs (transitive-deterministic line)
+- `sswg-trs vN.X.Y` denotes a stable deterministic release line.
+- `sswg-trs vN.*.*` **MUST** be deterministic and backward-compatible across all models up to that major family `vN` and earlier (as declared by compatibility policy).
+- Any claim of trs determinism/back-compat **MUST** be proven by reproducibility + replay + compatibility evidence gates.
+
+### 2.4 mvm (minimum viable model line)
+- `mvm` defines the **minimum viable model**: the minimum acceptable pipeline completeness for `sswg` software.
+- `mvm` is a **minimum skeletal pipeline structure** that **MUST NOT** return errors under its declared scope, but **MAY** contain small bugs that do not break gating invariants or determinism contracts where required.
+- `mvm` **MUST** always enforce the canonical 9-phase pipeline and required validation gates in this document.
 
 ---
 
-## 3) Canonical 9-Phase Pipeline (Full Set, Ordered, Separated)
+## 3) Canonical Mission (Non-Negotiable)
+
+### 3.1 sswg mandate
+sswg **MUST** enforce a **phase-driven**, **audit-ready**, **9-phase** pipeline that yields deterministic measurement outputs where required.
+
+### 3.2 mvm mandate (minimum viable model)
+mvm defines the **minimum viable model**, the minimum acceptable pipeline completeness for sswg software. Workflows and tooling are invalid unless the full **9-phase** pipeline is supported and enforced at the mvm level.
+
+---
+
+## 4) Global Canonic mvm Requirements (Immutable Gates)
+
+This section defines the global canonic **minimum viable model (mvm)** requirements as **immutable gates**. These gates are binding for all work, including `sswg`, `sswg-exp` (unless sandbox-barred), and `sswg-trs`. Any violation **MUST** hard-fail execution and **MUST** block promotion.
+
+### 4.1 Immutable gate: 9-phase availability (full_9_phase)
+- The pipeline **MUST** support the canonical set `full_9_phase`.
+- The pipeline phases **MUST** exist and be enforceable in order:
+  - `ingest`
+  - `normalize`
+  - `parse`
+  - `analyze`
+  - `generate`
+  - `validate`
+  - `compare`
+  - `interpret`
+  - `log`
+
+### 4.2 Immutable gate: phase separation enforcement
+- Phase separation **MUST** be enforced.
+- Each phase **MUST** be declared explicitly and validated against its phase-specific schema.
+- Phase behaviors **MUST NOT** be collapsed.
+
+### 4.3 Immutable gate: minimum artifacts present
+The repo **MUST** include, at minimum:
+- `schemas/`
+- `pdl/`
+- validation entrypoints
+- logging outputs
+
+If any minimum artifact is missing, execution **MUST** stop and emit `Type: reproducibility_failure` or `Type: io_failure` (as appropriate).
+
+### 4.4 Immutable gate: required schema validation coverage
+The system **MUST** validate:
+- the PDL phase-set schema
+- all phase-level schemas
+
+At minimum, the following must exist and be valid:
+- `schemas/pdl.json` (wrapper)
+- `schemas/pdl-phase-set.json`
+- `schemas/pdl-phases/_common.json`
+- `schemas/pdl-phases/{ingest,normalize,parse,analyze,generate,validate,compare,interpret,log}.json`
+
+### 4.5 Immutable gate: deterministic phases
+Determinism is **required** for phases:
+- `normalize`
+- `analyze`
+- `validate`
+- `compare`
+
+If determinism is violated in any required phase, execution **MUST** halt and the failing phase **MUST** emit:
+- `Type: deterministic_failure`
+
+### 4.6 Immutable gate: audit-ready outputs
+Audit readiness **MUST** include support for:
+- bijective identifiers (where measurement keys are used)
+- replayable runs (deterministic phases reproducible from logged inputs)
+- delta comparisons (deterministic compare artifacts)
+
+Failure to satisfy audit-ready output requirements **MUST** block promotion and **MUST** emit the appropriate failure label type.
+
+### 4.7 Immutable gate: enforcement behavior
+If any immutable mvm gate is violated:
+- execution **MUST** halt (`failure_behavior: stop_execution`)
+- the failing phase **MUST** emit a required failure label
+- when the violation is deterministic, the label **MUST** include:
+  - `Type: deterministic_failure`
+
+---
+
+## 5) Canonical 9-Phase Pipeline (Full Set, Ordered, Separated)
 
 All runs, workflows, and artifacts **MUST** conform to the canonical phase order:
 
@@ -54,25 +149,20 @@ All runs, workflows, and artifacts **MUST** conform to the canonical phase order
 8. `interpret`
 9. `log`
 
-### 3.1 Phase separation
-- Each phase **MUST** be declared explicitly and validated against its phase-specific schema.
-- Phase behaviors **MUST NOT** be collapsed, merged, skipped, or reordered.
-- Any attempt to combine phase responsibilities **MUST** hard-fail (see Failure Labeling).
-
-### 3.2 Determinism requirements
+### 5.1 Determinism requirements
 Determinism is **required** for phases:
 - `normalize`
 - `analyze`
 - `validate`
 - `compare`
 
-Interpretation is explicitly **nondeterministic** and **MUST** be labeled as such (see §8.4).
+Interpretation is explicitly **nondeterministic** and **MUST** be labeled as such (see §10.4).
 
 ---
 
-## 4) Global Canon Requirements (Apply to All Work)
+## 6) Global Canon Requirements (Apply to All Work)
 
-### 4.1 Canonic anchoring (required metadata)
+### 6.1 Canonic anchoring (required metadata)
 Every artifact produced or modified in this repo **MUST** have a canonical anchor containing:
 
 - `anchor_id`
@@ -83,18 +173,248 @@ Every artifact produced or modified in this repo **MUST** have a canonical ancho
 
 If an artifact format cannot embed this metadata inline, the metadata **MUST** exist as a colocated sidecar file or registry entry under an agreed canonical index.
 
-### 4.2 Immutability of canon
+### 6.2 Immutability of canon
 - Once `status: canonical`, the anchored artifact **MUST** be immutable.
-- Canonical changes **MUST** occur via delta overlays only (see §4.3).
+- Canonical changes **MUST** occur via delta overlays only (see §6.3).
 - Any direct modification to a canonical anchor **MUST** hard-fail.
 
-### 4.3 Cross-schema delta overlays (mandatory evolution mechanism)
+### 6.3 Cross-schema delta overlays (mandatory evolution mechanism)
 All schema and governance evolution **MUST** be expressed as overlays, not destructive rewrites.
 
 Each overlay **MUST** declare:
 - `base_schema_ref` (immutable pointer)
 - `overlay_id`, `overlay_version`
 - explicit field-level operations: `add` / `override` / `deprecate`
+- precedence rules (overlay wins **only** within declared scope)
+- compatibility statement: `backward` / `forward` / `breaking`
+
+Promotion **MUST** be blocked if:
+- an overlay introduces ambiguous interpretation, OR
+- an overlay breaks declared compatibility without a migration plan.
+
+---
+
+## 7) Canonical Schema Contracts (PDL)
+
+### 7.1 Required schemas
+The canonical PDL enforcement is:
+
+- `schemas/pdl.json` (wrapper)
+  - delegates to `schemas/pdl-phase-set.json`
+  - which enforces the 9-phase ordered prefixItems set
+- `schemas/pdl-phase-set.json`
+- `schemas/pdl-phases/_common.json`
+- `schemas/pdl-phases/{ingest,normalize,parse,analyze,generate,validate,compare,interpret,log}.json`
+
+### 7.2 PDL validity requirement
+- Any PDL document claiming `pipeline_profile: full_9_phase` **MUST** validate against `schemas/pdl.json`.
+- A PDL document **MUST** contain exactly 9 phases in correct order (`prefixItems` enforcement).
+- `items: false` is authoritative: additional phases or reordering **MUST** fail validation.
+
+### 7.3 Handler + IO requirements (PDL contract)
+- Each phase **MUST** include:
+  - `name`, `type`, `enabled`, `description`, `inputs`, `outputs`, `handler`
+- Each `inputs[]` / `outputs[]` entry **MUST** conform to `_common.json#/$defs/io_item`.
+- `id` fields **MUST** match: `^[a-z][a-z0-9_\-]*$`
+- Phase schema constraints are authoritative. If a phase schema requires a constraint field, it **MUST** be present and correct.
+
+### 7.4 Phase-specific constraint invariants (enforced by schema)
+Agents **MUST** ensure the following per-phase constraints remain satisfied:
+
+- `ingest`: `no_interpretation: true`, `no_mutation_of_canonical: true`
+- `normalize`: `deterministic_required: true`, `alignment_rules_required: true`
+- `parse`: `schema_binding_required: true`, `no_generation: true`
+- `analyze`: `deterministic_required: true`, `no_generative_tools_for_measurement: true` (bijective IDs when applicable)
+- `generate`: `outputs_must_be_declarative: true`, `no_measurement_keys_generated_stochastically: true`
+- `validate`: `schema_validation_required: true`, `invariants_required: true` (bijectivity checks when applicable)
+- `compare`: `deterministic_required: true`, `overlap_metrics_allowed ⊆ {iou, jaccard}`
+- `interpret`: `must_reference_measured_artifacts: true`, `output_must_be_labeled_nondeterministic: true`
+- `log`: `run_id_required: true`, `inputs_hash_required: true`, `phase_status_required: true`
+
+---
+
+## 8) Repository Layer Policy (Immutable vs Additive)
+
+### 8.1 Canonical layers (immutable)
+The following directories are canonical layers and **MUST** be treated as immutable in production:
+
+- `generator/`
+- `cli/`
+- `pdl/`
+- `reproducibility/`
+
+### 8.2 Generated layers (additive-only)
+The following directories are generated layers and **MUST** be additive-only:
+
+- `artifacts/`
+- `data/`
+- `docs/`
+
+---
+
+## 9) Validation Gates (Promotion Blocking, Required)
+
+Promotion, merge, release, or “canonical” marking **MUST** be blocked unless all required gates pass:
+
+1. `schema_validation`
+2. `phase_schema_validation`
+3. `invariants_validation`
+4. `reproducibility_validation`
+
+A gate failure **MUST**:
+- emit the correct failure label, and
+- stop execution.
+
+---
+
+## 10) Failure Labeling Standard (Hard-Fail, Typed, Auditable)
+
+### 10.1 Required failure label fields
+On any failure, the failing phase **MUST** emit a failure label containing:
+
+- `Type`
+- `message`
+- `phase_id`
+
+### 10.2 Allowed failure types
+`Type` **MUST** be one of:
+- `deterministic_failure`
+- `schema_failure`
+- `io_failure`
+- `tool_mismatch`
+- `reproducibility_failure`
+
+### 10.3 Hard-fail policy
+- When any required invariant fails, the phase **MUST** emit a failure label and **MUST** hard-fail execution immediately.
+- “Soft failures,” “warnings-only,” or “continue on error” behavior **MUST NOT** occur for required invariants.
+
+### 10.4 Interpret phase labeling (nondeterministic)
+- `interpret` outputs **MUST** be labeled nondeterministic and **MUST** reference measured artifacts only.
+- `interpret` **MUST NOT** mutate measurement outputs or canonical anchors.
+
+---
+
+## 11) Validator Operations (Required Tooling + Exact Actions)
+
+### 11.1 Required validator entrypoint
+The repo **MUST** provide a validator module capable of:
+- loading `schemas/pdl.json` (wrapper → phase set),
+- resolving local `$ref` across `schemas/pdl-phases/*`,
+- validating PDL YAML/JSON,
+- emitting correctly typed failure labels,
+- exiting non-zero on failure.
+
+### 11.2 Phase ownership of schema validation failures
+Schema validation failures **MUST** be labeled:
+- `Type: schema_failure`
+- `phase_id: validate`
+
+### 11.3 Required pre-run action
+Agents and CI **MUST** validate any PDL before execution.
+
+✅ `python -m generator.pdl_validator pdl/example_full_9_phase.yaml schemas`
+
+---
+
+## 12) Compare Phase Requirements (Deterministic Deltas)
+
+- `compare` **MUST** be deterministic.
+- If overlap metrics are used, they **MUST** be restricted to:
+  - `iou`
+  - `jaccard`
+
+---
+
+## 13) Log Phase Requirements (Audit-Ready Output)
+
+The `log` phase **MUST** emit audit-ready outputs including:
+- `run_id`
+- input hashes
+- per-phase status
+- references to PDL, schema versions, overlay versions, and failure labels.
+
+---
+
+## 14) Agent Responsibilities (Exact Actions for Compliance)
+
+All agents (human or automated) working in this repo **MUST** follow this sequence whenever they create/modify pipeline artifacts.
+
+### 14.1 Before making changes
+1. **MUST** identify affected phases.
+2. **MUST** identify touched layers (canonical vs generated).
+3. **MUST** use overlays by default; base rewrites are disallowed unless explicitly authorized.
+
+### 14.2 While making changes
+1. **MUST** preserve phase separation and required constraints.
+2. **MUST** preserve determinism requirements.
+3. **MUST** ensure canonical anchors exist.
+4. **MUST** ensure failures are labeled and hard-fail.
+
+### 14.3 After making changes (required checks)
+1. **MUST** validate PDL against `schemas/pdl.json`.
+2. **MUST** ensure phase schemas validate.
+3. **MUST** ensure gates pass before promotion.
+4. **MUST** ensure audit-ready log outputs exist.
+5. **MUST** provide reproducibility notes for replay.
+
+---
+
+## 15) Prohibited Behaviors (Hard Stops)
+
+- Changing the 9-phase set, order, or separation.
+- Introducing nondeterminism into required deterministic phases.
+- Using generative tooling to generate measurement keys.
+- Directly mutating canonical anchors.
+- Violating additive-only layer constraints.
+- Emitting untyped failures or failing silently.
+- Violating root-scope agent rules (§0), including prohibited search commands and PR/commit flow.
+
+---
+
+## 16) Minimal Acceptance Criteria (Release/Promotion Readiness)
+
+A change set is not promotion-ready unless:
+
+- PDL validation passes (`schemas/pdl.json` wrapper).
+- Phase schemas pass for all 9 phases.
+- Determinism checks pass for required phases.
+- Compare outputs are deterministic and metric-compliant.
+- Interpret outputs are measured-only and labeled nondeterministic.
+- Log outputs include run id, input hashes, statuses, and references.
+- Failure labeling is correct under intentional violation tests.
+
+---
+
+## 17) Enforcement Policy (Authority)
+
+- `sswg.yaml` has highest precedence; violation policy is `hard_fail`.
+- `mvm.yaml` defines minimum viable model completeness; missing requirements invalidate workflows.
+
+Agents **MUST** treat these as authoritative constraints. No bypasses are permitted.
+
+---
+
+## 18) Quick Reference: Required Files (Minimum Set)
+
+Agents **MUST** verify presence and correctness of:
+
+- `sswg.yaml`
+- `mvm.yaml`
+- `schemas/pdl.json`
+- `schemas/pdl-phase-set.json`
+- `schemas/pdl-phases/_common.json`
+- `schemas/pdl-phases/*.json` (9 files)
+- `generator/pdl_validator.py`
+- `pdl/example_full_9_phase.yaml`
+
+Any missing file in the minimum set **MUST** stop execution and **MUST** emit:
+- `Type: reproducibility_failure` (environment cannot be reconstructed), or
+- `Type: io_failure` (missing/unreadable path),
+with `phase_id: validate` when discovered during validation.
+
+---
+
+End of AGENTS.md.- explicit field-level operations: `add` / `override` / `deprecate`
 - precedence rules (overlay wins **only** within declared scope)
 - compatibility statement: `backward` / `forward` / `breaking`
 
