@@ -1,0 +1,19 @@
+{
+  "base_schema_ref": "schemas/pdl.json#",
+  "overlay_id": "example_overlay",
+  "overlay_version": "1.0.0",
+  "operations": [
+    {
+      "op": "add",
+      "path": "/phases/0/description",
+      "value": "Updated description."
+    }
+  ],
+  "precedence": {
+    "scope": "pdl",
+    "notes": "Overlay applies only to PDL phase descriptions."
+  },
+  "compatibility": {
+    "status": "backward"
+  }
+}
