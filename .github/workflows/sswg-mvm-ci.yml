@@ -68,16 +68,25 @@ jobs:
 
       - name: PDL validation (example phase set)
         run: |
-          python -m generator.pdl_validator pdl/example_full_9_phase.yaml
+          python -m generator.pdl_validator pdl/example_full_9_phase.yaml schemas --report-dir artifacts/validation --run-id ci-run
 
       - name: Root contract validation
         run: |
           python scripts/validate_root_contracts.py
           python scripts/lint_casing.py
 
+      - name: PDL schema validation gate
+        run: |
+          python scripts/validate_pdl_artifacts.py --pdl-dir pdl --schema-dir schemas --report-dir artifacts/validation --run-id ci-run
+
+      - name: Promotion readiness gate
+        run: |
+          python scripts/run_promotion_readiness.py --run-id ci-run
+
       - name: Run tests
         run: |
-          pytest -q          echo "🚀 SSWG-MVM CI Summary"
+          pytest -q
+          echo "🚀 SSWG-MVM CI Summary"
           echo "• Version: $SSWG_VERSION"
           echo "• Python: $(python3 --version)"
           echo "• Installed packages:"

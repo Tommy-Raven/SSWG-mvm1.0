@@ -1,0 +1,19 @@
+{
+  "base_schema_ref": "schemas/pdl.json#",
+  "overlay_id": "example_overlay",
+  "overlay_version": "1.0.0",
+  "operations": [
+    {
+      "op": "override",
+      "path": "/phases/3/constraints/deterministic_required",
+      "value": true
+    }
+  ],
+  "precedence": {
+    "scope": "pdl",
+    "notes": "Overlay applies only to PDL phase constraints."
+  },
+  "compatibility": {
+    "status": "backward"
+  }
+}
