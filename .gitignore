@@ -59,3 +59,5 @@ data/outputs/*
 !data/outputs/training_template_20251207034925.md
 !data/outputs/unnamed_workflow.md
 !data/outputs/workflow_001.md
+data/
+build/
