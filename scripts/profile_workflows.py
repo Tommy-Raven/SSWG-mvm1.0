@@ -66,7 +66,8 @@ def _safe_validate_workflow(workflow: Dict[str, Any]) -> Tuple[bool, list[str], 
         ok, errors = validate_workflow(workflow)
     except Exception as exc:  # pylint: disable=broad-exception-caught
         return False, [], str(exc)
-    return bool(ok), [str(error) for error in (errors or [])], None
+    error_list = [errors] if errors else []
+    return bool(ok), error_list, None
 
 
 def _write_anchor(artifact_path: Path) -> Path:

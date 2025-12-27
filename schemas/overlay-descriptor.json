@@ -1,5 +1,5 @@
 {
-  "$id": "https://schemas.sswg.local/overlay-descriptor.json#",
+  "$id": "overlay-descriptor.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "sswg overlay descriptor",
   "type": "object",

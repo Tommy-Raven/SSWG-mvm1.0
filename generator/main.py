@@ -720,7 +720,7 @@ def process_workflow(
     # 3. Schema validation
     ok, errors = validate_workflow(workflow)
     if not ok and errors:
-        logger.warning("Initial schema validation reported %d issues.", len(errors))
+        logger.warning("Initial schema validation reported issues: %s", errors)
         workflow.setdefault("evaluation", {}).setdefault(
             "notes",
             [],
