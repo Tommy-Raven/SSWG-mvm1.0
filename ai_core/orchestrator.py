@@ -128,6 +128,7 @@ class Orchestrator:
         self.dashboard = CLIDashboard()
         self.telemetry = TelemetryLogger()
         self.last_phase_status: Dict[str, Dict[str, object]] = {}
+        self._workflow_counter = 0
 
     def _load_workflow_source(
         self,
@@ -182,7 +183,7 @@ class Orchestrator:
     # ------------------------------------------------------------------ #
     def run(
         self,
-        workflow: Workflow,
+        workflow: Workflow | dict[str, Any],
         phases: Optional[Iterable[str]] = None,
         validate_after: bool = True,
     ) -> Workflow:
@@ -199,6 +200,15 @@ class Orchestrator:
             The same Workflow instance, potentially mutated with outputs,
             evaluation results, etc.
         """
+        if isinstance(workflow, dict):
+            if not workflow.get("workflow_id") and not workflow.get("id"):
+                self._workflow_counter += 1
+                workflow = {
+                    **workflow,
+                    "workflow_id": f"workflow_{self._workflow_counter}",
+                }
+            workflow = Workflow(workflow)
+
         wf_id = workflow.id
         phases_to_run: List[str] = list(
             phases or workflow.get_default_phases()
@@ -288,11 +298,12 @@ class Orchestrator:
             valid, errors = validate_workflow(wf_dict)
             if not valid:
                 logger.error(
-                    "Schema validation failed for workflow %s (%d issue(s)).",
+                    "Schema validation failed for workflow %s: %s",
                     wf_id,
-                    len(errors or []),
+                    errors or "Unknown schema error.",
                 )
-                signal = classify_validation_failure(len(errors or []))
+                error_count = 1 if errors else 0
+                signal = classify_validation_failure(error_count)
                 decision = recovery_decision(signal.error_class, signal.severity)
                 incident = build_incident(wf_id, signal, remediation="block_promotion")
                 apply_incident_metadata(workflow.metadata, incident, decision)
@@ -300,12 +311,13 @@ class Orchestrator:
                     "orchestrator.validation_failed",
                     {
                         "workflow_id": wf_id,
-                        "error_count": len(errors or []),
+                        "error_count": error_count,
+                        "error": errors,
                     },
                 )
                 self.telemetry.record(
                     "validation_error",
-                    {"workflow_id": wf_id, "errors": [str(e) for e in errors or []]},
+                    {"workflow_id": wf_id, "errors": errors},
                 )
                 # MVM decision: raise, but this could be downgraded later.
                 raise ValueError(f"Invalid workflow schema for {wf_id}")

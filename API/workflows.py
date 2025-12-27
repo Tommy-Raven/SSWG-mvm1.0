@@ -111,9 +111,11 @@ def validate(
     return True, "ok"
 
 
-def _format_schema_errors(errors: Optional[list[Any]]) -> str:
+def _format_schema_errors(errors: Optional[Any]) -> str:
     if not errors:
         return "Schema validation failed."
+    if isinstance(errors, str):
+        return errors
     return "; ".join(
         f"{error.message} at {list(error.path)}" for error in errors
     )
