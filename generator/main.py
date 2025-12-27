@@ -718,6 +718,7 @@ def process_workflow(
     _apply_inheritance_checks(workflow, change_source="initial_pass")
 
     # 3. Schema validation
+    # 1. Schema validation
     ok, errors = validate_workflow(workflow)
     if not ok and errors:
         logger.warning("Initial schema validation reported issues: %s", errors)
@@ -750,6 +751,11 @@ def process_workflow(
     _apply_meta_metrics(workflow, quality_report=base_quality)
 
     # 7. Recursive refinement (single iteration) if enabled
+    # 4. Evaluation + semantic scoring
+    base_quality = evaluate_workflow_quality(workflow)
+    workflow.setdefault("evaluation", {})["quality"] = base_quality
+
+    # 5. Recursive refinement (single iteration) if enabled
     refined = deepcopy(workflow)
     if enable_refinement:
         recursion_manager = RecursionManager(output_dir=out_dir)
@@ -827,6 +833,11 @@ def process_workflow(
 
     # 6. Export updated visualization assets
     # 8. Export updated visualization assets
+    export_graphviz(refined, str(out_dir))
+    viz_export_json(refined, str(out_dir))
+    viz_export_markdown(refined, str(out_dir))
+
+    # 6. Export updated visualization assets
     export_graphviz(refined, str(out_dir))
     viz_export_json(refined, str(out_dir))
     viz_export_markdown(refined, str(out_dir))
