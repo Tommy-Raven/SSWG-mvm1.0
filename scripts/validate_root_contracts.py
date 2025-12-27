@@ -18,6 +18,7 @@ CONTRACTS = {
     "sswg.yaml": "sswg_contract_schema.json",
     "mvm.yaml": "mvm_contract_schema.json",
     "execution_policy.yaml": "execution_policy_schema.json",
+    "guarantees.yaml": "guarantees_schema.json",
     "governance.yaml": "governance_schema.json",
     "invariants.yaml": "invariants_schema.json",
     "root_contract.yaml": "root_contract_schema.json",
@@ -63,8 +64,42 @@ def validate_contracts() -> int:
             print(f"- {failure}")
         return 1
 
+    cross_failures = _validate_output_guarantees()
+    if cross_failures:
+        print("root contract cross-validation failures:")
+        for failure in cross_failures:
+            print(f"- {failure}")
+        return 1
+
     print("root contract validation passed")
     return 0
+
+
+def _validate_output_guarantees() -> list[str]:
+    failures: list[str] = []
+    execution_policy = load_yaml(ROOT_DIR / "execution_policy.yaml")
+    guarantees = load_yaml(ROOT_DIR / "guarantees.yaml")
+
+    tooling = execution_policy.get("execution_policy", {}).get("tooling", {})
+    required_guarantees = set(tooling.get("required_output_guarantees", []))
+    defined_guarantees = set(
+        guarantees.get("guarantees", {}).get("definitions", {}).keys()
+    )
+    missing = required_guarantees - defined_guarantees
+    if missing:
+        failures.append(
+            "execution_policy.yaml: tooling.required_output_guarantees must be defined "
+            f"in guarantees.yaml (missing: {', '.join(sorted(missing))})"
+        )
+
+    guarantees_ref = tooling.get("guarantees_ref")
+    if guarantees_ref and not (ROOT_DIR / guarantees_ref).exists():
+        failures.append(
+            "execution_policy.yaml: tooling.guarantees_ref does not exist "
+            f"({guarantees_ref})"
+        )
+
+    return failures
 
 
 if __name__ == "__main__":
