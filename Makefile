@@ -1,20 +1,24 @@
-.PHONY: help doctor preflight test lint format security coverage
+.PHONY: help doctor preflight test lint format security coverage gates
 
 help:
 	@echo "Targets:"
-	@echo "  doctor     - sanity checks (no mutation)"
-	@echo "  preflight  - full local CI-equivalent run"
-	@echo "  test       - pytest"
-	@echo "  lint       - ruff static checks"
-	@echo "  format     - black formatting check"
+	@echo "  doctor     - environment + repo sanity checks"
+	@echo "  test       - pytest (fast)"
+	@echo "  coverage   - pytest with coverage (needs pytest-cov injected)"
+	@echo "  lint       - ruff check"
+	@echo "  format     - black --check"
 	@echo "  security   - pip-audit + bandit"
-	@echo "  coverage   - pytest coverage report"
+	@echo "  gates      - repo audit gates (scripts/...)"
+	@echo "  preflight  - all of the above (local CI equivalent)"
 
 doctor:
 	./setup.sh --doctor
 
 test:
 	pytest -q
+
+coverage:
+	pytest --cov=. --cov-report=term-missing
 
 lint:
 	ruff check .
@@ -26,12 +30,15 @@ security:
 	pip-audit
 	bandit -r . -x tests
 
-coverage:
-	pytest --cov=. --cov-report=term-missing
+gates:
+	python3 scripts/audit_readiness_validation.py
+	python3 scripts/redaction_gate.py
+	python3 scripts/replay_determinism_gate.py
 
 preflight:
 	python3 -m compileall .
-	pytest -q
-	ruff check .
-	black --check .
-	pip-audit
+	$(MAKE) test
+	$(MAKE) lint
+	$(MAKE) format
+	$(MAKE) security
+	$(MAKE) gates
